@@ -1,16 +1,15 @@
 
 
 /*
-* Oger constructor.
+* Fake Oger namespace. (maybe better use constructor function?)
 */
-function Oger() {
-}
+var Oger = {};
 
 
 /*
-* Marker for localisation
+* Marker for (later) localisation
 */
-function Oger._(text) {
+Oger._ = function(text) {
   return text;
-}
+};
 
