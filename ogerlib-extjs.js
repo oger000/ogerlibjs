@@ -12,6 +12,24 @@ Oger.extjs = {};
 
 
 /*
+* Check if a response is present at all and has the 'success' property.
+* In extjs 3.3.1 this is not handled as failure and the success handler is called.
+*/
+Oger.extjs.actionSuccess = function(action) {
+
+  if (action != undefined && action.result != undefined &&
+      action.result.success != undefined && action.result.success == true) {
+    return true;
+  }
+
+  // otherwise notify an error
+  Ext.Msg.alert(Oger._('Fehler (Server)'), Oger._('Antwort des Servers fehlerhaft.'));
+  return false;
+
+}  // eo check for successful response
+
+
+/*
 * Force that the upper left corner of an Extjs object to be displayed inside the
 * boundery of another Extjs object. The moved object is not resized.
 * If you also want the object also to be resized to fit into the outer objet,
@@ -180,3 +198,66 @@ Oger.extjs.adjustToFit = function(obj, viewPort, autoScroll) {
   }
 
 }  // eo adjust
+
+
+/*
+* General handler for form submission errors.
+* On not "sufficient" handled failures do not return true to notify
+* that subsequent handling is expected.
+*/
+Oger.extjs.handleFormSubmitFailure = function(form, action) {
+
+  switch (action.failureType) {
+    case Ext.form.Action.CLIENT_INVALID:
+      Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler im Formular. Bitte korrekt ausfüllen.'));
+      return true;
+    case Ext.form.Action.CONNECT_FAILURE:
+      Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler bei der Datenübertragung. Bitte nochmal probieren.'));
+      return true;
+    case Ext.form.Action.SERVER_INVALID:
+      //Ext.Msg.alert(Oger._('Fehler'), Oger._('Serverapplikation meldet successfull=false.'));
+      // handle only some situations
+      var isHandled = false;
+      if (action.result.msg != undefined) {
+        Ext.Msg.alert(Oger._('Fehler (App)'), action.result.msg,
+          // Messagebox.alert does not stop code, so handle code also here
+          function(btn, text, opt) {
+            if (action.result.code != undefined) {
+              action.result.code();
+            };
+          }
+        );
+        isHandled = true;
+      }
+      if (!isHandled && action.result.code != undefined) {
+        action.result.code();
+        isHandled = true;
+      }
+
+      // last resor for server failure
+      if (!isHandled) {
+        Ext.Msg.alert(Oger._('Fehler (Server)'), Oger._('Antwort des Servers fehlerhaft.'));
+      }
+      break;
+    case Ext.form.Action.LOAD_FAILURE:
+      Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler beim Laden von Daten oder keine Daten bereitgestellt.'));
+      // this can not be (or should not be) handled generaly, so do not return with true
+      break;
+    default:
+      Ext.Msg.alert(Oger._('Fehler'), Oger._('Unbekannter Submit/Action-Fehlertyp:' + action.failureType + '.'));
+      // this can not be (or should not be) handled generaly, so do not return with true
+  }  // eo switch
+
+}; // eo form submission error handler
+
+
+
+/*
+* General handler for ajax failures
+*/
+Oger.extjs.handleAjaxFailure = function(response, opts) {
+
+  Ext.Msg.alert(Oger._('Fehler'), Oger._('Request: ') + opts.url + '.<br>' +
+                                  Oger._('Response: ') + response.status + ' ' + response.statusText + '.');
+
+}; // eo ajax error handler
