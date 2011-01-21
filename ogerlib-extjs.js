@@ -22,8 +22,27 @@ Oger.extjs.actionSuccess = function(action) {
     return true;
   }
 
+  // SOME MESSAGES ONLY FOR COLLECTING FOR BUGREPORT (begin) -------------------------
+  if (action == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action == undefinded)'));
+    return false;
+  }
+  if (action.result == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result == undefinded)'));
+    return false;
+  }
+  if (action.result.success == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result.success == undefinded)'));
+    return false;
+  }
+  if (action.result.success == false) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result.success == false)'));
+    return false;
+  }
+  // SOME MESSAGES ONLY FOR COLLECTING FOR BUGREPORT (end) -------------------------
+
   // otherwise notify an error
-  Ext.Msg.alert(Oger._('Fehler (Server)'), Oger._('Antwort des Servers fehlerhaft.'));
+  Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer.'));
   return false;
 
 }  // eo check for successful response
