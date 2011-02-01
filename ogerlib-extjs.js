@@ -22,8 +22,27 @@ Oger.extjs.actionSuccess = function(action) {
     return true;
   }
 
+  // SOME MESSAGES ONLY FOR COLLECTING FOR BUGREPORT (begin) -------------------------
+  if (action == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action == undefinded)'));
+    return false;
+  }
+  if (action.result == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result == undefinded)'));
+    return false;
+  }
+  if (action.result.success == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result.success == undefinded)'));
+    return false;
+  }
+  if (action.result.success == false) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result.success == false)'));
+    return false;
+  }
+  // SOME MESSAGES ONLY FOR COLLECTING FOR BUGREPORT (end) -------------------------
+
   // otherwise notify an error
-  Ext.Msg.alert(Oger._('Fehler (Server)'), Oger._('Antwort des Servers fehlerhaft.'));
+  Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer.'));
   return false;
 
 }  // eo check for successful response
@@ -261,3 +280,26 @@ Oger.extjs.handleAjaxFailure = function(response, opts) {
                                   Oger._('Response: ') + response.status + ' ' + response.statusText + '.');
 
 }; // eo ajax error handler
+
+
+
+/*
+* Check if form is dirty (used in 'beforeclose' event)
+* @form: Form to be checked
+* @panel: Panel (or window) that should be closed
+*/
+Oger.extjs.confirmDirtyClose = function(form, panel) {
+
+  if (form.isDirty()) {
+    Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?'), function(answerId) {
+      if(answerId == 'yes') {
+        // this should work, but I have not tested
+        //this.hide(null); // window.hide(null) to "unset" animation target - default to null
+        //this.destroy();
+        panel.hide(null); // window.hide(null) to "unset" animation target - default to null
+        panel.destroy();
+      }
+    });
+  }
+
+}  // eo confirm dirty close
