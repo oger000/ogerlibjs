@@ -340,5 +340,28 @@ Oger.extjs.resetDirty = function(form) {
       */
     }
   });
-
 };  // eo undirty form hack
+
+
+
+/*
+* Workaround for bug in firefox.
+* Messageboxes (confirm, alert, ...) are shown behind other windows
+* in paticular behind tabpanels.
+* Default zseed for window managers is 9000.
+* Copied from: http://nicolaematei.wordpress.com/2008/07/02/ext-js-firefox3-z-index-bug/
+* DOES NOT WORK AS EXPECTED (02/2011)
+*/
+this.fireFoxTempZSeed = 9000;
+Oger.extjs.fireFoxHighZSeed = function(setHigh){
+  if(Ext.isGecko3){ // TODO Temp Fix: FF3
+    if(setHigh){
+      this.fireFoxTempZSeed = Ext.WindowMgr.zseed;
+      alert(Ext.WindowMgr.zseed);
+      Ext.WindowMgr.zseed = 10000;
+    }
+    else {  // reset to old seed
+      Ext.WindowMgr.zseed = this.fireFoxTempZSeed;
+    }
+  }
+};  // eo firefox work around
