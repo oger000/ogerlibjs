@@ -312,4 +312,33 @@ Oger.extjs.forceClose = function(panel) {
 
   panel.hide(null); // window.hide(null) to "unset" animation target - default to null
   panel.destroy();
-}  // eo force close
+};  // eo force close
+
+
+/*
+* Unset the dirty state of a form
+* This is an ugly hack!
+* @form: Form which dirty state should be removed
+*/
+Oger.extjs.resetDirty = function(form) {
+  /*
+  var values = form.getValues();
+  for (i=0; i < values.lenght; i++){
+    field.originalValue = field.getRawValue();
+  }
+  */
+
+  form.items.each(function(f) {
+    if (f.isFormField) {
+      f.originalValue = f.getValue();
+      /*
+      if (f.xtype == "compositefield") {
+        this.eachItem(function(item) {
+          item.originalValue = item.getValue();
+        });
+      }
+      */
+    }
+  });
+
+};  // eo undirty form hack
