@@ -231,7 +231,7 @@ Oger.extjs.handleFormSubmitFailure = function(form, action) {
       Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler im Formular. Bitte korrekt ausfüllen.'));
       return true;
     case Ext.form.Action.CONNECT_FAILURE:
-      Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler bei der Datenübertragung. Bitte nochmal probieren.'));
+      Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler bei der Datenübertragung. Eventuell nochmal versuchen.'));
       return true;
     case Ext.form.Action.SERVER_INVALID:
       //Ext.Msg.alert(Oger._('Fehler'), Oger._('Serverapplikation meldet successfull=false.'));
