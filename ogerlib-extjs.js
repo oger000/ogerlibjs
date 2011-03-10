@@ -13,12 +13,16 @@ Oger.extjs = {};
 
 /*
 * Check if a response is present at all and has the 'success' property.
-* In extjs 3.3.1 this is not handled as failure and the success handler is called.
+* In extjs 3.3.1 if an response is empty (0 bytes) this is not handled as failure
+* but the success handler is called. See ux directory.
 */
-Oger.extjs.actionSuccess = function(action) {
+Oger.extjs.actionSuccess = function(action, showSuccessMsg) {
 
   if (action != undefined && action.result != undefined &&
       action.result.success != undefined && action.result.success == true) {
+    if (showSuccessMsg) {
+      Oger.extjs.submitMsg();
+    }
     return true;
   }
 
@@ -365,3 +369,21 @@ Oger.extjs.fireFoxHighZSeed = function(setHigh){
     }
   }
 };  // eo firefox work around
+
+
+
+/*
+* Form saved message
+*/
+Oger.extjs.submitMsg = function(success) {
+  if (typeof success == 'undefined') {
+    success = true;
+  }
+  if (success) {
+    Ext.Msg.alert(Oger._('Ergebnis'), Oger._('Datensatz wurde erfolgreich gespeichert.'));
+  }
+  else {
+    Ext.Msg.alert(Oger._('Fehler'), Oger._('Datensatz konnte nicht gespeichert werden.'));
+  }
+
+};  // eo saved ok message
