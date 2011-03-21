@@ -325,6 +325,14 @@ Oger.extjs.forceClose = function(panel) {
 * @form: Form which dirty state should be removed
 */
 Oger.extjs.resetDirty = function(form) {
+
+  // if a form panel is given than get the underlaying basic form
+  if (typeof form.getXType == 'function' && form.getXType() == 'form' &&
+      typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+
   /*
   var values = form.getValues();
   for (i=0; i < values.lenght; i++){
