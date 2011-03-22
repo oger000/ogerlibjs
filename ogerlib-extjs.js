@@ -383,12 +383,15 @@ Oger.extjs.fireFoxHighZSeed = function(setHigh){
 /*
 * Form saved message
 */
-Oger.extjs.submitMsg = function(success) {
-  if (typeof success == 'undefined') {
+Oger.extjs.submitMsg = function(success, addMsg) {
+  if (typeof success == 'undefined' || success === null) {
     success = true;
   }
+  if (typeof addMsg == 'undefined' || addMsg === null) {
+    addMsg = '';
+  }
   if (success) {
-    Ext.Msg.alert(Oger._('Ergebnis'), Oger._('Datensatz wurde erfolgreich gespeichert.'));
+    Ext.Msg.alert(Oger._('Ergebnis'), Oger._('Datensatz wurde erfolgreich gespeichert.' + addMsg));
   }
   else {
     Ext.Msg.alert(Oger._('Fehler'), Oger._('Datensatz konnte nicht gespeichert werden.'));
