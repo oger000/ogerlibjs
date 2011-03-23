@@ -332,7 +332,6 @@ Oger.extjs.resetDirty = function(form) {
     form = form.getForm();
   }
 
-
   /*
   var values = form.getValues();
   for (i=0; i < values.lenght; i++){
@@ -340,20 +339,49 @@ Oger.extjs.resetDirty = function(form) {
   }
   */
 
-  form.items.each(function(f) {
-    if (f.isFormField) {
-      f.originalValue = f.getValue();
+  var resetFieldFunc = function(field) {
+    if (field.isFormField) {
+      field.originalValue = field.getValue();
+      //field.originalValue = field.getRawValue();
       /*
-      if (f.xtype == "compositefield") {
+      if (field.xtype == "compositefield") {
         this.eachItem(function(item) {
           item.originalValue = item.getValue();
         });
       }
       */
     }
-  });
-};  // eo undirty form hack
+  };
 
+  form.items.each(resetFieldFunc);
+};  // eo reset dirty
+
+
+/*
+* Empty all fields of a form
+* This is an ugly hack!
+* @form: Form for which the fields should be set to empty
+*/
+Oger.extjs.emptyForm = function(form, resetDirty) {
+
+  // if a form panel is given than get the underlaying basic form
+  if (typeof form.getXType == 'function' && form.getXType() == 'form' &&
+      typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+  var emptyFieldFunc = function(field) {
+    if (field.isFormField && typeof field.setValue == 'function') {
+      field.setValue('');
+    }
+  };
+
+  form.items.each(emptyFieldFunc);
+
+  if (resetDirty) {
+    Oger.extjs.resetDirty(form);
+  }
+};  // eo empty form
 
 
 /*
