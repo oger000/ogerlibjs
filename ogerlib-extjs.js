@@ -341,7 +341,45 @@ Oger.extjs.resetDirty = function(form) {
 
   var resetFieldFunc = function(field) {
     if (field.isFormField) {
-      field.originalValue = field.getValue();
+      if (typeof field.getXType == 'function' && field.getXType() == 'radiogroup') {
+        /*
+        * copied from extjs checkbox group source
+         reset : function() {
+              if (this.originalValue) {
+                  // Clear all items
+                  this.eachItem(function(c) {
+                    if(c.setValue){
+                      c.setValue(false);
+                      c.originalValue = c.getValue();
+                    }
+                  });
+                  // Set items stored in originalValue, ugly - set a flag to reset the originalValue
+                  // during the horrible onSetValue.  This will allow trackResetOnLoad to function.
+                  this.resetOriginal = true;
+                  this.setValue(this.originalValue);
+                  delete this.resetOriginal;
+              } else {
+                this.eachItem(function(c) {
+                  if(c.reset) {
+                    c.reset();
+                  }
+                });
+              }
+              // Defer the clearInvalid so if BaseForm's collection is being iterated it will be called AFTER it is complete.
+              // Important because reset is being called on both the group and the individual items.
+              (function() {
+                this.clearInvalid();
+              }).defer(50, this);
+            },
+        */
+        //Ext.each(field.items, resetFieldFunc);
+        field.eachItem(function(c) {
+          c.originalValue = c.getValue();
+        });
+      }
+      else {
+        field.originalValue = field.getValue();
+      }
       //field.originalValue = field.getRawValue();
       /*
       if (field.xtype == "compositefield") {
