@@ -28,3 +28,13 @@ Oger.debug = function(msg) {
   // maybe firebug only?
   //console.log(msg);
 }
+
+
+/*
+* A central place to handle my own debug messages by
+* commenting out some or all actions.
+* Use Ext.MessageBox to have a non-blocking variant.
+*/
+Oger.debugExt = function(msg) {
+  Ext.Msg.alert(msg);
+}
