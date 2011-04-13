@@ -341,7 +341,8 @@ Oger.extjs.resetDirty = function(form) {
 
   var resetFieldFunc = function(field) {
     if (field.isFormField) {
-      if (typeof field.getXType == 'function' && field.getXType() == 'radiogroup') {
+      if (typeof field.getXType == 'function' &&
+          (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup')) {
         /*
         * copied from extjs checkbox group source
          reset : function() {
