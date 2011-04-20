@@ -319,6 +319,77 @@ Oger.extjs.forceClose = function(panel) {
 };  // eo force close
 
 
+
+
+/**
+* check if form is dirty and ask for reset
+*/
+Oger.extjs.formIsUnDirty = function(form, showMsg) {
+
+  // if no form given it cannot be dirty?
+  if (!form) {
+    return true;
+  }
+
+  // if a form panel is given than get the underlaying basic form
+  if (typeof form.getXType == 'function' && form.getXType() == 'form' &&
+      typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+  // check form
+  if (form.isDirty()) {
+
+    var dirtyMsg = '';
+
+    if (showMsg) {
+
+      dirtyMsg = ' ';
+
+      form.items.each(
+        function(field) {
+          if (field.isFormField) {
+            if (typeof field.getXType == 'function' && field.getXType() == 'radiogroup') {
+              field.eachItem(function(c) {
+                if (String(c.originalValue) != String(c.getValue())) {
+                  dirtyMsg += ' ' + c.name + ': orig=' + c.originalValue + ', cur=' + c.getValue() + ' (inp=' + c.inputValue + ')';
+                };
+              });
+            }
+            else {
+              if (String(field.originalValue) != String(field.getValue())) {
+                dirtyMsg += ' ' + field.name + ': orig=' + field.originalValue + ', cur=' + field.getValue();
+              };
+            };
+          };
+        }
+      );
+    };
+
+    Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg), function(answerId) {
+      if(answerId == 'yes') {
+        activeForm.getForm().reset();
+      }
+    });
+
+    // report as dirty, because eventual reset is a callback function and called later
+    // a second try is necessary to close without being questened!
+    return false;
+  }  // eo is dirty
+
+  // not dirty
+  return true;
+}; // eo dirty check
+
+
+
+
+
+
+
+
+
+
 /*
 * Unset the dirty state of a form
 * This is an ugly hack!
