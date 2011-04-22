@@ -368,7 +368,7 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
 
     Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg), function(answerId) {
       if(answerId == 'yes') {
-        activeForm.getForm().reset();
+        form.reset();
       }
     });
 
