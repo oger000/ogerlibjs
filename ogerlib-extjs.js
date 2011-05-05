@@ -332,8 +332,7 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
   }
 
   // if a form panel is given than get the underlaying basic form
-  if (typeof form.getXType == 'function' && form.getXType() == 'form' &&
-      typeof form.getForm == 'function') {
+  if (typeof form.getForm == 'function') {
     form = form.getForm();
   }
 
