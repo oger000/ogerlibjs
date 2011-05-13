@@ -397,68 +397,27 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
 Oger.extjs.resetDirty = function(form) {
 
   // if a form panel is given than get the underlaying basic form
-  if (typeof form.getXType == 'function' && form.getXType() == 'form' &&
-      typeof form.getForm == 'function') {
+  if (typeof form.getForm == 'function') {
     form = form.getForm();
   }
 
-  /*
-  var values = form.getValues();
-  for (i=0; i < values.lenght; i++){
-    field.originalValue = field.getRawValue();
-  }
-  */
-
-  var resetFieldFunc = function(field) {
+  var processField = function(field) {
     if (field.isFormField) {
       if (typeof field.getXType == 'function' &&
           (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup')) {
-        /*
-        * copied from extjs checkbox group source
-         reset : function() {
-              if (this.originalValue) {
-                  // Clear all items
-                  this.eachItem(function(c) {
-                    if(c.setValue){
-                      c.setValue(false);
-                      c.originalValue = c.getValue();
-                    }
-                  });
-                  // Set items stored in originalValue, ugly - set a flag to reset the originalValue
-                  // during the horrible onSetValue.  This will allow trackResetOnLoad to function.
-                  this.resetOriginal = true;
-                  this.setValue(this.originalValue);
-                  delete this.resetOriginal;
-              } else {
-                this.eachItem(function(c) {
-                  if(c.reset) {
-                    c.reset();
-                  }
-                });
-              }
-              // Defer the clearInvalid so if BaseForm's collection is being iterated it will be called AFTER it is complete.
-              // Important because reset is being called on both the group and the individual items.
-              (function() {
-                this.clearInvalid();
-              }).defer(50, this);
-            },
-        */
-        //Ext.each(field.items, resetFieldFunc);
         field.eachItem(function(c) {
           c.originalValue = c.getValue();
         });
       }
+      else if (typeof field.getXType == 'function' &&  field.getXType() == 'checkboxgroup') {
+        field.items.each(processField);
+      }
+      else if (typeof field.getXType == 'function' &&  field.getXType() == 'compositefield') {
+        field.items.each(processField);
+      }
       else {
         field.originalValue = field.getValue();
       }
-      //field.originalValue = field.getRawValue();
-      /*
-      if (field.xtype == "compositefield") {
-        this.eachItem(function(item) {
-          item.originalValue = item.getValue();
-        });
-      }
-      */
     }
   };
 
@@ -474,18 +433,29 @@ Oger.extjs.resetDirty = function(form) {
 Oger.extjs.emptyForm = function(form, resetDirty) {
 
   // if a form panel is given than get the underlaying basic form
-  if (typeof form.getXType == 'function' && form.getXType() == 'form' &&
-      typeof form.getForm == 'function') {
+  if (typeof form.getForm == 'function') {
     form = form.getForm();
   }
 
-  var emptyFieldFunc = function(field) {
-    if (field.isFormField && typeof field.setValue == 'function') {
+  var processField = function(field) {
+    if (typeof field.getXType == 'function' &&
+        (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup')) {
+      field.eachItem(function(c) {
+        c.originalValue = c.setValue('');
+      });
+    }
+    else if (typeof field.getXType == 'function' &&  field.getXType() == 'checkboxgroup') {
+      field.items.each(processField);
+    }
+    else if (typeof field.getXType == 'function' &&  field.getXType() == 'compositefield') {
+      field.items.each(processField);
+    }
+    else if (field.isFormField && typeof field.setValue == 'function') {
       field.setValue('');
     }
   };
 
-  form.items.each(emptyFieldFunc);
+  form.items.each(processField);
 
   if (resetDirty) {
     Oger.extjs.resetDirty(form);
