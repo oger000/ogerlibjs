@@ -421,7 +421,7 @@ Oger.extjs.resetDirty = function(form) {
     }
   };
 
-  form.items.each(resetFieldFunc);
+  form.items.each(processField);
 };  // eo reset dirty
 
 
