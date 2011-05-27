@@ -384,14 +384,8 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
 
 
 
-
-
-
-
-
 /*
 * Unset the dirty state of a form
-* This is an ugly hack!
 * @form: Form which dirty state should be removed
 */
 Oger.extjs.resetDirty = function(form) {
@@ -427,7 +421,6 @@ Oger.extjs.resetDirty = function(form) {
 
 /*
 * Empty all fields of a form
-* This is an ugly hack!
 * @form: Form for which the fields should be set to empty
 */
 Oger.extjs.emptyForm = function(form, resetDirty) {
@@ -461,6 +454,65 @@ Oger.extjs.emptyForm = function(form, resetDirty) {
     Oger.extjs.resetDirty(form);
   }
 };  // eo empty form
+
+
+/*
+* Get invalid fields
+* @form: Form to test the fields
+*/
+Oger.extjs.getInvalidFieldNames = function(form) {
+
+  // if a form panel is given than get the underlaying basic form
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+  var invalidFields = '';
+
+  var processField = function(field) {
+    if (field.isFormField) {
+      if (typeof field.getXType == 'function' &&
+          (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup')) {
+        field.eachItem(function(c) {
+          if (!c.isValid()) {
+            invalidFields += c.getName() + '<BR>';
+          }
+        });
+      }
+      else if (typeof field.getXType == 'function' &&  field.getXType() == 'checkboxgroup') {
+        field.items.each(processField);
+      }
+      else if (typeof field.getXType == 'function' &&  field.getXType() == 'compositefield') {
+        field.items.each(processField);
+      }
+      else {
+        if (!field.isValid()) {
+          invalidFields += field.getName() + '<BR>';
+        }
+      }
+    }
+  };
+
+  form.items.each(processField);
+};  // eo reset dirty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
