@@ -343,7 +343,7 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
 
     if (showMsg) {
 
-      dirtyMsg = ' ';
+      dirtyMsg = ' Dirty is: ';
 
       form.items.each(
         function(field) {
