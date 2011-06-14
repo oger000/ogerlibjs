@@ -397,20 +397,15 @@ Oger.extjs.resetDirty = function(form) {
 
   var processField = function(field) {
     if (field.isFormField) {
-      if (typeof field.getXType == 'function' &&
-          (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup')) {
-        field.eachItem(function(c) {
-          c.originalValue = c.getValue();
-        });
-      }
-      else if (typeof field.getXType == 'function' &&  field.getXType() == 'checkboxgroup') {
-        field.items.each(processField);
-      }
-      else if (typeof field.getXType == 'function' &&  field.getXType() == 'compositefield') {
-        field.items.each(processField);
-      }
-      else {
-        field.originalValue = field.getValue();
+      if (typeof field.getXType == 'function') {
+        if (field.getXType() == 'radiogroup' ||
+            field.getXType() == 'checkboxgroup' ||
+            field.getXType() == 'compositefield') {
+          Ext.each(field.items.items, processField);
+        }
+        else {
+          field.originalValue = field.getValue();
+        }
       }
     }
   };
@@ -425,30 +420,33 @@ Oger.extjs.resetDirty = function(form) {
 */
 Oger.extjs.emptyForm = function(form, resetDirty) {
 
+  if (!form) {
+    return;
+  }
+
   // if a form panel is given than get the underlaying basic form
   if (typeof form.getForm == 'function') {
     form = form.getForm();
   }
 
   var processField = function(field) {
-    if (typeof field.getXType == 'function' &&
-        (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup')) {
-      field.eachItem(function(c) {
-        c.originalValue = c.setValue('');
-      });
-    }
-    else if (typeof field.getXType == 'function' &&  field.getXType() == 'checkboxgroup') {
-      field.items.each(processField);
-    }
-    else if (typeof field.getXType == 'function' &&  field.getXType() == 'compositefield') {
-      field.items.each(processField);
+    if (typeof field.getXType == 'function') {
+      if (field.getXType() == 'radiogroup' ||
+          field.getXType() == 'checkboxgroup' ||
+          field.getXType() == 'compositefield') {
+        Ext.each(field.items.items, processField);
+      }
+      else if (field.getXType() == 'radio' ||
+               field.getXType() == 'checkbox') {
+        field.checked = false;
+      }
     }
     else if (field.isFormField && typeof field.setValue == 'function') {
       field.setValue('');
     }
   };
 
-  form.items.each(processField);
+  form.getFields().each(processField);
 
   if (resetDirty) {
     Oger.extjs.resetDirty(form);
