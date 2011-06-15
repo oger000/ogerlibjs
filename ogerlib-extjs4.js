@@ -344,26 +344,32 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
     if (showMsg) {
 
       dirtyMsg = ' Dirty is: ';
+      //dirtyMsg += ' ' + form.getValues(true, true);
 
-      form.items.each(
-        function(field) {
-          if (field.isFormField) {
-            if (typeof field.getXType == 'function' && field.getXType() == 'radiogroup') {
-              field.eachItem(function(c) {
-                if (String(c.originalValue) != String(c.getValue())) {
-                  dirtyMsg += ' ' + c.name + ': orig=' + c.originalValue + ', cur=' + c.getValue() + ' (inp=' + c.inputValue + ')';
-                };
-              });
+      var processField = function(field) {
+        if (field.getXType() == 'compositefield') {
+          // items of radiogroup and checkboxgroup are separate fields
+          // so no handling of group is necessary
+          Ext.each(field.items.items, processField);
+        }
+        else if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+          // items are separate fields so handling of group is not necessary
+        }
+        else {
+          if (field.isDirty()) {
+            dirtyMsg += ' ' + field.name;
+            if (field.getXType() == 'radiofield' || field.getXType() == 'checkboxfield') {
+              dirtyMsg += '(' + field.inputValue + ')';
             }
-            else {
-              if (String(field.originalValue) != String(field.getValue())) {
-                dirtyMsg += ' ' + field.name + ': orig=' + field.originalValue + ', cur=' + field.getValue();
-              };
-            };
+            dirtyMsg += ' ' + ': orig=' + field.originalValue + ', cur=' + field.getValue();
           };
         }
-      );
-    };
+      };
+
+      var tmp = form.getFields();
+      form.getFields().each(processField);
+
+    }  // eo show msg
 
     Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg), function(answerId) {
       if(answerId == 'yes') {
@@ -396,17 +402,14 @@ Oger.extjs.resetDirty = function(form) {
   }
 
   var processField = function(field) {
-    if (field.isFormField) {
-      if (typeof field.getXType == 'function') {
-        if (field.getXType() == 'radiogroup' ||
-            field.getXType() == 'checkboxgroup' ||
-            field.getXType() == 'compositefield') {
-          Ext.each(field.items.items, processField);
-        }
-        else {
-          field.originalValue = field.getValue();
-        }
-      }
+    if (field.getXType() == 'compositefield') {
+      Ext.each(field.items.items, processField);
+    }
+    else if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+      // items are separate fields so handling of group is not necessary
+    }
+    else {
+      field.resetOriginalValue();
     }
   };
 
@@ -430,18 +433,16 @@ Oger.extjs.emptyForm = function(form, resetDirty) {
   }
 
   var processField = function(field) {
-    if (typeof field.getXType == 'function') {
-      if (field.getXType() == 'radiogroup' ||
-          field.getXType() == 'checkboxgroup' ||
-          field.getXType() == 'compositefield') {
-        Ext.each(field.items.items, processField);
-      }
-      else if (field.getXType() == 'radio' ||
-               field.getXType() == 'checkbox') {
-        field.checked = false;
-      }
+    if (field.getXType() == 'compositefield') {
+      Ext.each(field.items.items, processField);
     }
-    else if (field.isFormField && typeof field.setValue == 'function') {
+    else if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+      // items are separate fields so handling of group is not necessary
+    }
+    else if (field.getXType() == 'radiofield' || field.getXType() == 'checkboxfield') {
+      field.setValue(false);
+    }
+    else {
       field.setValue('');
     }
   };
