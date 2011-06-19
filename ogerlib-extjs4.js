@@ -402,11 +402,8 @@ Oger.extjs.resetDirty = function(form) {
   }
 
   var processField = function(field) {
-    if (field.getXType() == 'compositefield') {
-      Ext.each(field.items.items, processField);
-    }
-    else if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
-      // items are separate fields so handling of group is not necessary
+    if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+      // group items are separate fields so handling of group is not necessary
     }
     else {
       field.resetOriginalValue();
@@ -417,9 +414,11 @@ Oger.extjs.resetDirty = function(form) {
 };  // eo reset dirty
 
 
+
 /*
 * Empty all fields of a form
 * @form: Form for which the fields should be set to empty
+* Works for date fields too, even if null would be the correct empty value.
 */
 Oger.extjs.emptyForm = function(form, resetDirty) {
 
@@ -433,11 +432,8 @@ Oger.extjs.emptyForm = function(form, resetDirty) {
   }
 
   var processField = function(field) {
-    if (field.getXType() == 'compositefield') {
-      Ext.each(field.items.items, processField);
-    }
-    else if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
-      // items are separate fields so handling of group is not necessary
+    if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+      // group items are separate fields so handling of group is not necessary
     }
     else if (field.getXType() == 'radiofield' || field.getXType() == 'checkboxfield') {
       field.setValue(false);
@@ -455,6 +451,7 @@ Oger.extjs.emptyForm = function(form, resetDirty) {
 };  // eo empty form
 
 
+
 /*
 * Get invalid fields
 * @form: Form to test the fields
@@ -469,31 +466,20 @@ Oger.extjs.getInvalidFieldNames = function(form) {
   var invalidFields = '';
 
   var processField = function(field) {
-    if (field.isFormField) {
-      if (typeof field.getXType == 'function' &&
-          (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup')) {
-        field.eachItem(function(c) {
-          if (!c.isValid()) {
-            invalidFields += c.getName() + '<BR>';
-          }
-        });
-      }
-      else if (typeof field.getXType == 'function' &&  field.getXType() == 'checkboxgroup') {
-        field.items.each(processField);
-      }
-      else if (typeof field.getXType == 'function' &&  field.getXType() == 'compositefield') {
-        field.items.each(processField);
-      }
-      else {
-        if (!field.isValid()) {
-          invalidFields += field.getName() + '<BR>';
-        }
+    if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+      // group items are separate fields so handling of group is not necessary
+    }
+    else {
+      if (!field.isValid()) {
+        invalidFields += field.getName() + '<BR>';
       }
     }
   };
 
-  form.items.each(processField);
-};  // eo reset dirty
+  form.getFields().each(processField);
+
+  return invalidFields;
+};  // eo get fields that do not valid
 
 
 
