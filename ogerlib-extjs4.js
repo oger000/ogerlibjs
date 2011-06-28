@@ -291,32 +291,16 @@ Oger.extjs.handleAjaxFailure = function(response, opts) {
 * Check if form is dirty (used in 'beforeclose' event)
 * @panel: Panel (or window) that should be closed
 */
-Oger.extjs.confirmDirtyClose = function(panel) {
+Oger.extjs.confirmDirtyClose = function(win) {
 
   Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?'), function(answerId) {
     if(answerId == 'yes') {
-      // this should work, but I have not tested
-      //this.hide(null); // window.hide(null) to "unset" animation target - default to null
-      //this.destroy();
-      Oger.extjs.forceClose(panel);
-      //panel.hide(null); // window.hide(null) to "unset" animation target - default to null
-      //panel.destroy();
+      win.hide(null); // window.hide(null) to "unset" animation target - default to null
+      win.destroy();
     }
   });
 
 }  // eo confirm dirty close
-
-
-
-/*
-* Force close (bypass the beforclose event)
-* @panel: Panel (or window) that should be closed
-*/
-Oger.extjs.forceClose = function(panel) {
-
-  panel.hide(null); // window.hide(null) to "unset" animation target - default to null
-  panel.destroy();
-};  // eo force close
 
 
 
