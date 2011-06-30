@@ -293,7 +293,7 @@ Oger.extjs.handleAjaxFailure = function(response, opts) {
 */
 Oger.extjs.confirmDirtyClose = function(win) {
 
-  Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?'), function(answerId) {
+  Ext.Msg.confirm(Oger._('Bestätigung erforderlich - ' + win.title), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?'), function(answerId) {
     if(answerId == 'yes') {
       win.hide(null); // window.hide(null) to "unset" animation target - default to null
       win.destroy();
