@@ -1,0 +1,53 @@
+extjs 3.3 to extjs 4 migration
+
+
+1) Tree - eventsystem.
+Handler direkt in die leafs schreiben geht jetzt nicht mehr. Handler nur mehr über tree-events.
+
+2) Store - deklaration.
+Jsonstore gibts nicht mehr. Expliziter proxy erforderlich.  Die url im proxy deklarieren.
+
+3) Grid - deklaration.
+columns statt colModel.colums.
+- beforeitemclick
+  return false bricht die selektion der neuen zeile nicht ab, stattdessen beforeselect verwenden
+
+4) ux
+Die wenigsten user extentsions funktionieren.
+- Obsolet:
+  - xdate (angabe von submitformat in datefield)
+  - xcheckbox (angabe von uncheckedValue in checkbox)
+  - oosubmmit (primär wegen xdate und xcheckbox eingesetzt. Radiogroup dürfte in ext4 auch besser zu meinem modell passen.)
+  - fileupload: funktion bereitgestellt von Ext.form.field.File (xtype: 'filefield')
+
+- grid-filter-row: kein ersatz gefunden
+
+
+5) Form
+- compositefield gibt es nicht mehr (irreführende fehlermeldung) -> benutze fieldset
+
+
+6) Ext.Date
+Das defaultFormat wird in den locale files nicht gesetzt und bleibt auf "m/d/Y".
+Ext.util.Format.dateFormat wird korrekt gesetzt, ist aber kein standard und ist nicht dokumentiert.
+Patch:
+--- a/locale/ext-lang-de.js
++++ b/locale/ext-lang-de.js
+@@ -100,6 +100,7 @@ Ext.onReady(function() {
+         Ext.Date.getShortDayName = function(day) {
+             return Ext.Date.dayNames[day].substring(0, 3);
+         };
++        Ext.Date.defaultFormat = "d.m.Y";
+     }
+     if(Ext.MessageBox){
+         Ext.MessageBox.buttonText = {
+
+
+
+*** ERROR MESSAGES ***
+
+- "namespace is undefined"
+  in ext-all-debug.js: if (namespace === from || namespace.substring(0, from.length) === from) {
+  bedeutet meist verwendung von ux komponenten im extjs-3 modell oder weggefallene komponenten, die
+  igendwo verborgen sind und daher keine vernünftige javascript fehlermeldung bringen
+  (siehe <http://www.sencha.com/forum/showthread.php?136993-Error-in-migration-from-Ext-3.3-to-4.0.2>)
