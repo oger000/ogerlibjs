@@ -1,4 +1,4 @@
-extjs 3.3 to extjs 4 migration
+extjs 3.3 to extjs 4 migration docu
 
 
 1) Tree - eventsystem.
