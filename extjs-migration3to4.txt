@@ -48,6 +48,14 @@ Patch:
          Ext.MessageBox.buttonText = {
 
 
+7) Defer actions:
+   Ext.MessageBox.hide.defer(1500, Ext.MessageBox); oder
+   (function() { Ext.Msg.hide(); }).defer(5000);
+   -> Ext.Function.defer(Ext.MessageBox.hide, 1500, Ext.MessageBox);
+   => Ext.Function.defer(Function fn, Number millis, [Object scope], [Array args], [Boolean/Number appendArgs])
+
+
+
 
 *** ERROR MESSAGES ***
 
