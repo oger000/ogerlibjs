@@ -4,13 +4,17 @@ extjs 3.3 to extjs 4 migration docu
 1) Tree - eventsystem.
 Handler direkt in die leafs schreiben geht jetzt nicht mehr. Handler nur mehr über tree-events.
 
+
 2) Store - deklaration.
 Jsonstore gibts nicht mehr. Expliziter proxy erforderlich.  Die url im proxy deklarieren.
+
 
 3) Grid - deklaration.
 columns statt colModel.colums.
 - beforeitemclick
   return false bricht die selektion der neuen zeile nicht ab, stattdessen beforeselect verwenden
+?- rowclick und rowdblclick -> itemclick
+
 
 4) ux
 Die wenigsten user extentsions funktionieren.
@@ -25,6 +29,7 @@ Die wenigsten user extentsions funktionieren.
 
 5) Form
 - compositefield gibt es nicht mehr (irreführende fehlermeldung) -> benutze fieldset
+- defaultlayout: 'form' -> 'anchor'. Layout: 'form' -> "namespace is undefined" (siehe unten)
 
 
 6) Ext.Date
