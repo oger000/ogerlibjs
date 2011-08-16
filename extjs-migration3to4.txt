@@ -30,6 +30,8 @@ Die wenigsten user extentsions funktionieren.
 5) Form
 - compositefield gibt es nicht mehr (irreführende fehlermeldung) -> benutze fieldset
 - defaultlayout: 'form' -> 'anchor'. Layout: 'form' -> "namespace is undefined" (siehe unten)
+- reset dirty nicht defered aufrufen, sondern verlegen in actioncomplete event der form. (wäre auch in ext3 möglich gewesen)
+
 
 
 6) Ext.Date
