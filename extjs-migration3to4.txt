@@ -32,6 +32,11 @@ Die wenigsten user extentsions funktionieren.
 - defaultlayout: 'form' -> 'anchor'. Layout: 'form' -> "namespace is undefined" (siehe unten)
 - reset dirty nicht defered aufrufen, sondern verlegen in actioncomplete event der form. (wäre auch in ext3 möglich gewesen)
 
+5.1) Radiobox und checkboxgroup
+- Eine radiobox darf keinen namen haben, die dazugehörigen items (auswahlmöglichkeiten) MÜSSEN
+  einen namen haben - und zwar alle den gleichen.
+  Ein name an der radiobox selbst resultiert in:  invalid 'in' operand value \n if (value && name in value) { ...
+- Eine checkboxgroup darf auch keinen namen haben - macht auch nicht viel sinn.
 
 
 6) Ext.Date
@@ -66,3 +71,6 @@ Patch:
   bedeutet meist verwendung von ux komponenten im extjs-3 modell oder weggefallene komponenten, die
   igendwo verborgen sind und daher keine vernünftige javascript fehlermeldung bringen
   (siehe <http://www.sencha.com/forum/showthread.php?136993-Error-in-migration-from-Ext-3.3-to-4.0.2>)
+
+- "invalid 'in' operand value" \n "if (value && name in value) {"
+  Kann bedeuten name-property in radiobox gesetzt.

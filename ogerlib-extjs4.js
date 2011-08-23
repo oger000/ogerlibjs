@@ -345,7 +345,7 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
             if (field.getXType() == 'radiofield' || field.getXType() == 'checkboxfield') {
               dirtyMsg += '(' + field.inputValue + ')';
             }
-            dirtyMsg += ' ' + ': orig=' + field.originalValue + ', cur=' + field.getValue();
+            dirtyMsg += ': orig=' + field.originalValue + ', cur=' + field.getValue() + ';';
           };
         }
       };
@@ -526,3 +526,43 @@ Oger.extjs.submitMsg = function(success, addMsg) {
   }
 
 };  // eo saved ok message
+
+
+
+/*
+* Show a generic wait window for given millis
+*/
+Oger.showWaitWin = function(milli, modal) {
+
+  //Ext.Msg.wait(Oger._('Das dauert leider etwas ...'), Oger._('Bitte warten'));
+  //Ext.Function.defer(function() { Ext.Msg.hide; }, milli);
+
+  // Ext.Message is overwritten by any other error message and overwrites other messages too
+  // so use a self designed wait window
+
+  // modal defaults to true
+  if (modal == undefined || modal == null) {
+    modal = true;
+  }
+
+  var waitWin = Ext.create('Ext.window.Window', {
+    title: Oger._('Bitte Warten'),
+    width: 300,
+    height: 250,
+    modal: modal,
+    autoScroll: true,
+    layout: 'fit',
+    items: [
+      { xtype: 'form',
+        layout: 'fit',
+        items: [
+          { xtype: 'textarea', value: Oger._('Das dauert leider etwas länger ...'), disabled: true },
+        ]
+      },
+    ],
+  });
+  waitWin.show();
+  //waitWin.toFront();
+  Ext.Function.defer(function() { waitWin.close(); }, milli);
+
+}  // eo show wait window
