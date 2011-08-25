@@ -14,13 +14,19 @@ var Oger = {};
 /*
 * Marker for (later) localisation.
 */
+Oger.l10nValue = new Object();  // used as associative array
 Oger._ = function(text) {
-  return text;
+  var key = text.replace(/\W/g, '_');
+  var value = Oger.l10nValue[key];
+  if (value == undefined) {
+    return text;
+  }
+  return value;
 };
 
 
 /*
-* A central place to handle my own debug messages by
+* A central place to activate/deactivate my own debug messages by
 * commenting out some or all actions.
 */
 Oger.debug = function(msg) {
