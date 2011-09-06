@@ -18,7 +18,7 @@ Oger.l10nValue = new Object();  // used as associative array
 Oger._ = function(text) {
   // var key = text.replace(/[^a-z0-9_]/gi, '_');
   var key = text.replace(/\W/g, '_');
-  return (Oger.l10nValue[key] ? Oger.l10nValue[key] : '');
+  return (Oger.l10nValue[key] ? Oger.l10nValue[key] : text);
 };
 
 
