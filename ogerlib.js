@@ -41,3 +41,34 @@ Oger.debug = function(msg) {
 Oger.debugExt = function(msg) {
   Ext.Msg.alert(msg);
 }
+
+
+
+/*
+ * Send parameters to url
+ * based on: http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
+ * I did not find an extjs way to make a standard (non-ajax) submit
+ * so i use plain javascript and hope all browsers will support it
+ */
+Oger.sendToUrl = function(path, params, method) {
+
+  method = method || "post"; // Set method to post by default, if not specified.
+
+  // The rest of this code assumes you are not using a library.
+  // It can be made less wordy if you use one.
+  var form = document.createElement("FORM");
+  form.setAttribute("method", method);
+  form.setAttribute("action", path);
+
+  for(var key in params) {
+    var hiddenField = document.createElement("INPUT");
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", key);
+    hiddenField.setAttribute("value", params[key]);
+    form.appendChild(hiddenField);
+  }
+
+  document.body.appendChild(form);
+  form.submit();
+
+}  // eo send to url
