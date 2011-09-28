@@ -357,6 +357,7 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
 
     Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg), function(answerId) {
       if(answerId == 'yes') {
+        // Oger.extjs.resetForm(form);
         form.reset();
       }
     });
@@ -467,19 +468,33 @@ Oger.extjs.getInvalidFieldNames = function(form) {
 
 
 
+/**
+ * Reset form
+ * form.reset() does not reset null values in hidden fields and
+ *              does not reset values of fileField
+ * @form: Form which dirty state should be removed
+ */
+Oger.extjs.resetForm = function(form) {
 
+  // if a form panel is given than get the underlaying basic form
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
 
+  var processField = function(field) {
+    if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+      // group items are separate fields so handling of group is not necessary
+    }
+    else {
+      // field.setValue(field.originalValue);
+      // fileField has no setValue nor does "field.value = field.originalValue" work
+      // nor works field.reset() but something we must use
+      field.reset();  
+    }
+  };
 
-
-
-
-
-
-
-
-
-
-
+  form.getFields().each(processField);
+};  // eo reset form
 
 
 
