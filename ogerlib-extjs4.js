@@ -288,7 +288,7 @@ Oger.extjs.handleAjaxFailure = function(response, opts) {
 
 
 /*
-* Check if form is dirty (used in 'beforeclose' event)
+* Ask to force window close
 * @panel: Panel (or window) that should be closed
 */
 Oger.extjs.confirmDirtyClose = function(win) {
@@ -300,7 +300,7 @@ Oger.extjs.confirmDirtyClose = function(win) {
     }
   });
 
-}  // eo confirm dirty close
+}  // eo confirm force close
 
 
 
@@ -320,8 +320,26 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
     form = form.getForm();
   }
 
+
+  // for debug which formfields are detected
+  //var tmp = form.getFields();
+
+  // own processing to exclude fileField (which cannot be reseted!)
+  var dirtyFlag = false;
+  
+  var processField = function(field) {
+    if (field.isXType('filefield')) {
+      // do nothing
+    }
+    else if (field.isDirty()) {
+      dirtyFlag = true;
+    };
+  };
+  form.getFields().each(processField);
+
+
   // check form
-  if (form.isDirty()) {
+  if (dirtyFlag) {   // use own dirty flag instead of form.isDirty()
 
     var dirtyMsg = '';
 
@@ -331,18 +349,13 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
       //dirtyMsg += ' ' + form.getValues(true, true);
 
       var processField = function(field) {
-        if (field.getXType() == 'compositefield') {
-          // items of radiogroup and checkboxgroup are separate fields
-          // so no handling of group is necessary
-          Ext.each(field.items.items, processField);
-        }
-        else if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+        if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
           // items are separate fields so handling of group is not necessary
         }
         else {
           if (field.isDirty()) {
             dirtyMsg += ' ' + field.name;
-            if (field.getXType() == 'radiofield' || field.getXType() == 'checkboxfield') {
+            if (field.isXType('radiofield') || field.isXType('checkboxfield')) {
               dirtyMsg += '(' + field.inputValue + ')';
             }
             dirtyMsg += ': orig=' + field.originalValue + ', cur=' + field.getValue() + ';';
@@ -350,9 +363,7 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
         }
       };
 
-      var tmp = form.getFields();
       form.getFields().each(processField);
-
     }  // eo show msg
 
     Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg), function(answerId) {
@@ -387,7 +398,7 @@ Oger.extjs.resetDirty = function(form) {
   }
 
   var processField = function(field) {
-    if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+    if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
       // group items are separate fields so handling of group is not necessary
     }
     else {
@@ -417,10 +428,10 @@ Oger.extjs.emptyForm = function(form, resetDirty) {
   }
 
   var processField = function(field) {
-    if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+    if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
       // group items are separate fields so handling of group is not necessary
     }
-    else if (field.getXType() == 'radiofield' || field.getXType() == 'checkboxfield') {
+    else if (field.isXType('radiofield') || field.isXType('checkboxfield')) {
       field.setValue(false);
     }
     else {
@@ -451,7 +462,7 @@ Oger.extjs.getInvalidFieldNames = function(form) {
   var invalidFields = '';
 
   var processField = function(field) {
-    if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+    if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
       // group items are separate fields so handling of group is not necessary
     }
     else {
@@ -474,6 +485,7 @@ Oger.extjs.getInvalidFieldNames = function(form) {
  *              does not reset values of fileField
  * @form: Form which dirty state should be removed
  */
+/* FOR DOCUMENTATION ONLY
 Oger.extjs.resetForm = function(form) {
 
   // if a form panel is given than get the underlaying basic form
@@ -482,7 +494,7 @@ Oger.extjs.resetForm = function(form) {
   }
 
   var processField = function(field) {
-    if (field.getXType() == 'radiogroup' || field.getXType() == 'checkboxgroup' ) {
+    if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
       // group items are separate fields so handling of group is not necessary
     }
     else {
@@ -495,7 +507,7 @@ Oger.extjs.resetForm = function(form) {
 
   form.getFields().each(processField);
 };  // eo reset form
-
+*/
 
 
 
