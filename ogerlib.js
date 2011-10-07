@@ -1,17 +1,17 @@
-/*
+/**
 #LICENSE BEGIN
 #LICENSE END
 */
 
 
 
-/*
+/**
 * Fake Oger namespace. (maybe better use constructor function?)
 */
 var Oger = {};
 
 
-/*
+/**
 * Marker for (later) localisation.
 */
 Oger.l10nValue = new Object();  // used as associative array
@@ -22,7 +22,7 @@ Oger._ = function(text) {
 };
 
 
-/*
+/**
 * A central place to activate/deactivate my own debug messages by
 * commenting out some or all actions.
 */
@@ -33,7 +33,7 @@ Oger.debug = function(msg) {
 }
 
 
-/*
+/**
 * A central place to handle my own debug messages by
 * commenting out some or all actions.
 * Use Ext.MessageBox to have a non-blocking variant.
@@ -44,7 +44,7 @@ Oger.debugExt = function(msg) {
 
 
 
-/*
+/**
  * Send parameters to url
  * based on: http://stackoverflow.com/questions/133925/javascript-post-request-like-a-form-submit
  * I did not find an extjs way to make a standard (non-ajax) submit
@@ -72,3 +72,53 @@ Oger.sendToUrl = function(path, params, method) {
   form.submit();
 
 }  // eo send to url
+
+
+/**
+ * Natural compare for sort.
+ * Based on: http://my.opera.com/GreyWyvern/blog/show.dml/1671288
+*/
+Oger.natStrCmp = function(str1, str2) {
+  str1 = '' + str1;
+  str2 = '' + str2;
+
+  var chunkify = function(str) {
+
+    var aStr = [], x = 0, y = -1, wasDigit = 0, i, j;
+
+    while (i = (j = str.charAt(x++)).charCodeAt(0)) {
+      var isDigit = (i >=48 && i <= 57);  // '.' and '0'-'9' - we do not use '.' and no comma at all !!!
+      if (isDigit !== wasDigit) {
+        aStr[++y] = '';
+        wasDigit = isDigit;
+      }
+      aStr[y] += j;
+    }
+    return aStr;
+  }
+
+  var chunk1 = chunkify(str1);
+  var chunk2 = chunkify(str2);
+
+  for (x = 0; chunk1[x] && chunk2[x]; x++) {
+    if (chunk1[x] !== chunk2[x]) {
+      var c = Number(chunk1[x]), d = Number(chunk2[x]);
+      if (c == chunk1[x] && d == chunk2[x]) {
+        return c - d;
+      } else return (chunk1[x] > chunk2[x]) ? 1 : -1;
+    }
+  }
+  return chunk1.length - chunk2.length;
+}  // eo natural sort
+
+
+
+/**
+ * Natural compare for sort. Case insensitive.
+*/
+Oger.natStrCmpCi = function(str1, str2) {
+  str1 = '' + str1;
+  str2 = '' + str2;
+
+  return Oger.natStrCmpCi(str1.toLowerCase(), str2.toLowerCase());
+}  // eo case insensitive natural sort
