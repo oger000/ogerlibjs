@@ -304,6 +304,40 @@ Oger.extjs.confirmDirtyClose = function(win) {
 
 
 
+/**
+* check if form is dirty and do nothing else
+*/
+Oger.extjs.formIsDirtyFlag = function(form) {
+
+  // if no form given it cannot be dirty?
+  if (!form) {
+    return false;
+  }
+
+  // if a form panel is given than get the underlaying basic form
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+
+  // own processing to exclude fileField (which cannot be reseted!)
+  var dirtyFlag = false;
+  
+  var processField = function(field) {
+    if (field.isXType('filefield')) {
+      // do nothing
+    }
+    else if (field.isDirty()) {
+      dirtyFlag = true;
+    };
+  };
+  form.getFields().each(processField);
+
+  return dirtyFlag;
+}  // eo form is dirty flag
+
+
+
 
 /**
 * check if form is dirty and ask for reset
@@ -320,23 +354,7 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
     form = form.getForm();
   }
 
-
-  // for debug which formfields are detected
-  //var tmp = form.getFields();
-
-  // own processing to exclude fileField (which cannot be reseted!)
-  var dirtyFlag = false;
-  
-  var processField = function(field) {
-    if (field.isXType('filefield')) {
-      // do nothing
-    }
-    else if (field.isDirty()) {
-      dirtyFlag = true;
-    };
-  };
-  form.getFields().each(processField);
-
+  var dirtyFlag = Oger.extjs.formIsDirtyFlag(form);
 
   // check form
   if (dirtyFlag) {   // use own dirty flag instead of form.isDirty()
