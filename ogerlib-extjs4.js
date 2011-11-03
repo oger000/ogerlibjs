@@ -303,6 +303,35 @@ Oger.extjs.confirmDirtyClose = function(win) {
 }  // eo confirm force close
 
 
+/*
+* Ask to force window close
+* @panel: Panel (or window) that should be closed
+* @form: FormPanel or BasicForm to test for dirty state
+*/
+Oger.extjs.checkDirtyConfirmClose = function(win, form) {
+
+  if (!form) {
+    form = win.down('form');
+  }
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+  // only ask if dirty
+  if (Oger.extjs.formIsDirtyFlag(form)) {
+
+    Ext.Msg.confirm(Oger._('Bestätigung erforderlich - ' + win.title), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?'), function(answerId) {
+      if(answerId == 'yes') {
+        Oger.extjs.resetDirty(form);
+        win.close();
+      }
+    });
+
+    return false;
+  }
+
+}  // eo confirm force close
+
 
 /**
 * check if form is dirty and do nothing else
@@ -322,7 +351,7 @@ Oger.extjs.formIsDirtyFlag = function(form) {
 
   // own processing to exclude fileField (which cannot be reseted!)
   var dirtyFlag = false;
-  
+
   var processField = function(field) {
     if (field.isXType('filefield')) {
       // do nothing
@@ -500,10 +529,9 @@ Oger.extjs.getInvalidFieldNames = function(form) {
 /**
  * Reset form
  * form.reset() does not reset null values in hidden fields and
- *              does not reset values of fileField
+ *              does not reset values of FileField
  * @form: Form which dirty state should be removed
  */
-/* FOR DOCUMENTATION ONLY
 Oger.extjs.resetForm = function(form) {
 
   // if a form panel is given than get the underlaying basic form
@@ -511,6 +539,11 @@ Oger.extjs.resetForm = function(form) {
     form = form.getForm();
   }
 
+  // I am unable to reset FileField too, so use reset of ext
+  form.reset();
+  return;
+
+  // OBSOLETE for now
   var processField = function(field) {
     if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
       // group items are separate fields so handling of group is not necessary
@@ -519,13 +552,12 @@ Oger.extjs.resetForm = function(form) {
       // field.setValue(field.originalValue);
       // fileField has no setValue nor does "field.value = field.originalValue" work
       // nor works field.reset() but something we must use
-      field.reset();  
+      field.reset();
     }
   };
 
   form.getFields().each(processField);
 };  // eo reset form
-*/
 
 
 
