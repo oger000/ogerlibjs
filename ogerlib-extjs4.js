@@ -12,47 +12,8 @@ Oger.extjs = {};
 
 
 /*
-* Check if a response is present at all and has the 'success' property.
-* In extjs 3.3.1 if an response is empty (0 bytes) this is not handled as failure
-* but the success handler is called. See ux directory.
-*/
-Oger.extjs.actionSuccess = function(action, showSuccessMsg) {
-
-  if (action != undefined && action.result != undefined &&
-      action.result.success != undefined && action.result.success == true) {
-    if (showSuccessMsg) {
-      Oger.extjs.submitMsg();
-    }
-    return true;
-  }
-
-  // SOME MESSAGES ONLY FOR COLLECTING FOR BUGREPORT (begin) -------------------------
-  if (action == undefined) {
-    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action == undefinded)'));
-    return false;
-  }
-  if (action.result == undefined) {
-    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result == undefinded)'));
-    return false;
-  }
-  if (action.result.success == undefined) {
-    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result.success == undefinded)'));
-    return false;
-  }
-  if (action.result.success == false) {
-    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result.success == false)'));
-    return false;
-  }
-  // SOME MESSAGES ONLY FOR COLLECTING FOR BUGREPORT (end) -------------------------
-
-  // otherwise notify an error
-  Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer.'));
-  return false;
-
-}  // eo check for successful response
-
-
-/*
+* DEPRECATED: Use Ext.Component.alignTo(otherComponent, 'c-c?') instead.
+*
 * Force that the upper left corner of an Extjs object to be displayed inside the
 * boundery of another Extjs object. The moved object is not resized.
 * If you also want the object also to be resized to fit into the outer objet,
@@ -223,6 +184,49 @@ Oger.extjs.adjustToFit = function(obj, viewPort, autoScroll) {
 }  // eo adjust
 
 
+
+/*
+* Check if a response is present at all and has the 'success' property.
+* In extjs 3.3.1 if an response is empty (0 bytes) this is not handled as failure
+* but the success handler is called. See ux directory.
+*/
+Oger.extjs.actionSuccess = function(action, showSuccessMsg) {
+
+  if (action != undefined && action.result != undefined &&
+      action.result.success != undefined && action.result.success == true) {
+    if (showSuccessMsg) {
+      Oger.extjs.submitMsg();
+    }
+    return true;
+  }
+
+  // SOME MESSAGES ONLY FOR COLLECTING FOR BUGREPORT (begin) -------------------------
+  if (action == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action == undefinded)'));
+    return false;
+  }
+  if (action.result == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result == undefinded)'));
+    return false;
+  }
+  if (action.result.success == undefined) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result.success == undefinded)'));
+    return false;
+  }
+  if (action.result.success == false) {
+    Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer. (action.result.success == false)'));
+    return false;
+  }
+  // SOME MESSAGES ONLY FOR COLLECTING FOR BUGREPORT (end) -------------------------
+
+  // otherwise notify an error
+  Ext.Msg.alert(Oger._('Fehler (Server+)'), Oger._('Antwort des Servers fehlerhaft oder leer.'));
+  return false;
+
+}  // eo check for successful response
+
+
+
 /*
 * General handler for form submission errors.
 * On not "sufficient" handled failures do not return true to notify
@@ -287,56 +291,10 @@ Oger.extjs.handleAjaxFailure = function(response, opts) {
 
 
 
-/*
-* Ask to force window close
-* @panel: Panel (or window) that should be closed
-*/
-Oger.extjs.confirmDirtyClose = function(win) {
-
-  Ext.Msg.confirm(Oger._('Bestätigung erforderlich - ' + win.title), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?'), function(answerId) {
-    if(answerId == 'yes') {
-      win.hide(null); // window.hide(null) to "unset" animation target - default to null
-      win.destroy();
-    }
-  });
-
-}  // eo confirm force close
-
-
-/*
-* Ask to force window close
-* @panel: Panel (or window) that should be closed
-* @form: FormPanel or BasicForm to test for dirty state
-*/
-Oger.extjs.checkDirtyConfirmClose = function(win, form) {
-
-  if (!form) {
-    form = win.down('form');
-  }
-  if (typeof form.getForm == 'function') {
-    form = form.getForm();
-  }
-
-  // only ask if dirty
-  if (Oger.extjs.formIsDirtyFlag(form)) {
-
-    Ext.Msg.confirm(Oger._('Bestätigung erforderlich - ' + win.title), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?'), function(answerId) {
-      if(answerId == 'yes') {
-        Oger.extjs.resetDirty(form);
-        win.close();
-      }
-    });
-
-    return false;
-  }
-
-}  // eo confirm force close
-
-
 /**
 * check if form is dirty and do nothing else
 */
-Oger.extjs.formIsDirtyFlag = function(form) {
+Oger.extjs.formIsDirty = function(form) {
 
   // if no form given it cannot be dirty?
   if (!form) {
@@ -367,11 +325,10 @@ Oger.extjs.formIsDirtyFlag = function(form) {
 
 
 
-
 /**
-* check if form is dirty and ask for reset
-*/
-Oger.extjs.formIsUnDirty = function(form, showMsg) {
+ * Create info about dirty fields
+ */
+Oger.extjs.dirtyFieldsInfo = function(form) {
 
   // if no form given it cannot be dirty?
   if (!form) {
@@ -383,36 +340,94 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
     form = form.getForm();
   }
 
-  var dirtyFlag = Oger.extjs.formIsDirtyFlag(form);
+  var dirtyMsg = '';
 
-  // check form
+  var dirtyFlag = Oger.extjs.formIsDirty(form);
   if (dirtyFlag) {   // use own dirty flag instead of form.isDirty()
 
-    var dirtyMsg = '';
+    dirtyMsg = ' Dirty is: ';
+    //dirtyMsg += ' ' + form.getValues(true, true);
 
-    if (showMsg) {
+    var processField = function(field) {
+      if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
+        // items are separate fields so handling of group is not necessary
+      }
+      else {
+        if (field.isDirty()) {
+          dirtyMsg += ' ' + field.name;
+          if (field.isXType('radiofield') || field.isXType('checkboxfield')) {
+            dirtyMsg += '(' + field.inputValue + ')';
+          }
+          dirtyMsg += ': orig=' + field.originalValue + ', cur=' + field.getValue() + ';';
+        };
+      }
+    };
 
-      dirtyMsg = ' Dirty is: ';
-      //dirtyMsg += ' ' + form.getValues(true, true);
+    form.getFields().each(processField);
+  }  // eo show msg
 
-      var processField = function(field) {
-        if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
-          // items are separate fields so handling of group is not necessary
-        }
-        else {
-          if (field.isDirty()) {
-            dirtyMsg += ' ' + field.name;
-            if (field.isXType('radiofield') || field.isXType('checkboxfield')) {
-              dirtyMsg += '(' + field.inputValue + ')';
-            }
-            dirtyMsg += ': orig=' + field.originalValue + ', cur=' + field.getValue() + ';';
-          };
-        }
-      };
+  return dirtyMsg;
+}  // eo dirty fields message
 
-      form.getFields().each(processField);
-    }  // eo show msg
 
+
+/*
+* Ask to force window close
+* @panel: Panel (or window) that should be closed
+* @form: FormPanel or BasicForm to test for dirty state
+* @showDirtyInfo: Show info about dirty fields
+*/
+Oger.extjs.confirmDirtyClose = function(win, form, showDirtyInfo) {
+
+  if (!form) {
+    form = win.down('form');
+  }
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+  // only ask if dirty
+  if (Oger.extjs.formIsDirty(form)) {
+
+    var dirtyFieldsInfo = '';
+    if (showDirtyInfo) {
+      dirtyFieldsInfo = Oger.extjs.dirtyFieldsInfo(form);
+    }
+    Ext.Msg.confirm(Oger._('Bestätigung erforderlich - ' + win.title), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?' + dirtyFieldsInfo), function(answerId) {
+      if(answerId == 'yes') {
+        Oger.extjs.resetDirty(form);
+        win.close();
+      }
+    });
+
+    return false;
+  }
+
+}  // eo confirm force close
+
+
+
+/*
+* Ask to reset dirty form
+* @form: FormPanel or BasicForm to test for dirty state
+* @showDirtyInfo: Show info about dirty fields
+*/
+Oger.extjs.confirmDirtyReset = function(form, showDirtyInfo) {
+
+  if (!form) {
+    return;
+  }
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+  // only ask if dirty
+  if (Oger.extjs.formIsDirty(form)) {
+
+    var dirtyFieldsInfo = '';
+    if (showDirtyInfo) {
+      dirtyFieldsInfo = Oger.extjs.dirtyFieldsInfo(form);
+    }
     Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg), function(answerId) {
       if(answerId == 'yes') {
         // Oger.extjs.resetForm(form);
@@ -420,16 +435,10 @@ Oger.extjs.formIsUnDirty = function(form, showMsg) {
       }
     });
 
-    // report as dirty, because eventual reset is a callback function and called later
-    // a second try is necessary to close without being questened!
     return false;
-  }  // eo is dirty
+  }
 
-  // not dirty
-  return true;
-}; // eo dirty check
-
-
+}  // eo confirm force close
 
 
 
