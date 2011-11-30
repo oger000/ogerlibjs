@@ -236,7 +236,36 @@ Oger.extjs.handleFormSubmitFailure = function(form, action) {
 
   switch (action.failureType) {
     case Ext.form.Action.CLIENT_INVALID:
-      Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler im Formular. Bitte korrekt ausfüllen.'));
+      var win = Ext.create('Ext.window.Window', {
+        title: Oger._('Fehler'),
+        width: 100,
+        height: 100,
+        modal: true,
+        autoScroll: true,
+        layout: 'fit',
+
+        items: [
+          { xtype: 'panel',
+            html: Oger._('Fehler im Formular. Bitte korrekt ausfüllen.'),
+          }
+        ],
+
+        buttonAlign: 'center',
+        buttons: [
+          { text: Oger._('Ok'),
+            handler: function(button, event) {
+              this.up('window').close();
+            },
+          },
+          { text: Oger._('Details'),
+            handler: function(button, event) {
+              Ext.Msg.alert(Oger._('Formularfehler - Details'), Oger.extjs.getInvalidFieldNames(form));
+            },
+          },
+        ],
+      });
+      win.show();
+      //Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler im Formular. Bitte korrekt ausfüllen.'));
       return true;
     case Ext.form.Action.CONNECT_FAILURE:
       Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler bei der Datenübertragung. Eventuell nochmal versuchen.'));
@@ -523,7 +552,7 @@ Oger.extjs.getInvalidFieldNames = function(form) {
     }
     else {
       if (!field.isValid()) {
-        invalidFields += field.getName() + '<BR>';
+        invalidFields += field.getName() + ', ';
       }
     }
   };
