@@ -236,35 +236,7 @@ Oger.extjs.handleFormSubmitFailure = function(form, action) {
 
   switch (action.failureType) {
     case Ext.form.Action.CLIENT_INVALID:
-      var win = Ext.create('Ext.window.Window', {
-        title: Oger._('Fehler'),
-        width: 100,
-        height: 100,
-        modal: true,
-        autoScroll: true,
-        layout: 'fit',
-
-        items: [
-          { xtype: 'panel',
-            html: Oger._('Fehler im Formular. Bitte korrekt ausfüllen.'),
-          }
-        ],
-
-        buttonAlign: 'center',
-        buttons: [
-          { text: Oger._('Ok'),
-            handler: function(button, event) {
-              this.up('window').close();
-            },
-          },
-          { text: Oger._('Details'),
-            handler: function(button, event) {
-              Ext.Msg.alert(Oger._('Formularfehler - Details'), Oger.extjs.getInvalidFieldNames(form));
-            },
-          },
-        ],
-      });
-      win.show();
+      Oger.extjs.showInvalidFields(form);
       //Ext.Msg.alert(Oger._('Fehler'), Oger._('Fehler im Formular. Bitte korrekt ausfüllen.'));
       return true;
     case Ext.form.Action.CONNECT_FAILURE:
@@ -552,7 +524,7 @@ Oger.extjs.getInvalidFieldNames = function(form) {
     }
     else {
       if (!field.isValid()) {
-        invalidFields += field.getName() + ', ';
+        invalidFields += (invalidFields ? ', ' : '') + field.getName();
       }
     }
   };
@@ -681,3 +653,52 @@ Oger.showWaitWin = function(milli, modal) {
   Ext.Function.defer(function() { waitWin.close(); }, milli);
 
 }  // eo show wait window
+
+
+
+/*
+ * Show windows with invalid field names
+*/
+Oger.extjs.showInvalidFields = function(form) {
+
+  if (!form) {
+    return;
+  }
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+  if (form.isValid()) {
+    return;
+  }
+
+  var win = Ext.create('Ext.window.Window', {
+    title: Oger._('Fehler'),
+    width: 100,
+    height: 100,
+    modal: true,
+    autoScroll: true,
+    layout: 'fit',
+
+    items: [
+      { xtype: 'panel',
+        html: Oger._('Fehler im Formular. Bitte korrekt ausfüllen.'),
+      }
+    ],
+
+    buttonAlign: 'center',
+    buttons: [
+      { text: Oger._('Ok'),
+        handler: function(button, event) {
+          this.up('window').close();
+        },
+      },
+      { text: Oger._('Details'),
+        handler: function(button, event) {
+          Ext.Msg.alert(Oger._('Formularfehler - Details'), Oger._('Feldnamen: ') + Oger.extjs.getInvalidFieldNames(form));
+        },
+      },
+    ],
+  });
+  win.show();
+
+}  // eo invalid fields window
