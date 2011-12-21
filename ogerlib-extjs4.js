@@ -346,7 +346,7 @@ Oger.extjs.dirtyFieldsInfo = function(form) {
   var dirtyFlag = Oger.extjs.formIsDirty(form);
   if (dirtyFlag) {   // use own dirty flag instead of form.isDirty()
 
-    dirtyMsg = ' Dirty is: ';
+    dirtyMsg = Oger._('Geändert:');
     //dirtyMsg += ' ' + form.getValues(true, true);
 
     var processField = function(field) {
@@ -357,9 +357,9 @@ Oger.extjs.dirtyFieldsInfo = function(form) {
         if (field.isDirty()) {
           dirtyMsg += ' ' + field.name;
           if (field.isXType('radiofield') || field.isXType('checkboxfield')) {
-            dirtyMsg += '(' + field.inputValue + ')';
+            dirtyMsg += '[' + field.inputValue + ']';
           }
-          dirtyMsg += ': orig=' + field.originalValue + ', cur=' + field.getValue() + ';';
+          dirtyMsg += ': old=' + field.originalValue + ', new=' + field.getValue() + ';';
         };
       }
     };
@@ -386,20 +386,46 @@ Oger.extjs.confirmDirtyClose = function(win, form, showDirtyInfo) {
   if (typeof form.getForm == 'function') {
     form = form.getForm();
   }
-
+http://localhost/archdocu/
   // only ask if dirty
   if (Oger.extjs.formIsDirty(form)) {
 
-    var dirtyFieldsInfo = '';
-    if (showDirtyInfo) {
-      dirtyFieldsInfo = Oger.extjs.dirtyFieldsInfo(form);
-    }
-    Ext.Msg.confirm(Oger._('Bestätigung erforderlich - ' + win.title), Oger._('Ungespeicherte Änderungen vorhanden. Trotzdem schliessen?' + dirtyFieldsInfo), function(answerId) {
-      if(answerId == 'yes') {
-        Oger.extjs.resetDirty(form);
-        win.close();
-      }
+    var confirmWin = Ext.create('Ext.window.Window', {
+      title: Oger._('Bestätigung erforderlich - ') + win.title,
+      width: 300,
+      height: 150,
+      modal: true,
+      autoScroll: true,
+      layout: 'fit',
+
+      items: [
+        { xtype: 'panel',
+          html: Oger._('<CENTER><BR>Ungespeicherte Änderungen vorhanden.<BR><BR>Zurück zur Eingabe?</CENTER>'),
+        }
+      ],
+
+      buttonAlign: 'center',
+      buttons: [
+        { text: Oger._('Ja'),
+          handler: function(button, event) {
+            this.up('window').close();
+          },
+        },
+        { text: Oger._('Wegwerfen'),
+          handler: function(button, event) {
+            Oger.extjs.resetDirty(form);
+            win.close();
+            this.up('window').close();
+          },
+        },
+        { text: Oger._('Details'),
+          handler: function(button, event) {
+            Ext.Msg.alert(Oger._('Ungespeicherte Änderungen - Details'), Oger.extjs.dirtyFieldsInfo(form));
+          },
+        },
+      ],
     });
+    confirmWin.show();
 
     return false;
   }
