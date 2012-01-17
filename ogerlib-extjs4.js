@@ -545,13 +545,9 @@ Oger.extjs.getInvalidFieldNames = function(form) {
   var invalidFields = '';
 
   var processField = function(field) {
-    if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
-      // group items are separate fields so handling of group is not necessary
-    }
-    else {
-      if (!field.isValid()) {
-        invalidFields += (invalidFields ? ', ' : '') + field.getName();
-      }
+    // include radiogroup and checkbox group
+    if (!field.isValid()) {
+      invalidFields += (invalidFields ? ', ' : '') + field.getName();
     }
   };
 

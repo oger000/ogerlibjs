@@ -32,11 +32,14 @@ Die wenigsten user extentsions funktionieren.
 - defaultlayout: 'form' -> 'anchor'. Layout: 'form' -> "namespace is undefined" (siehe unten)
 - reset dirty nicht defered aufrufen, sondern verlegen in actioncomplete event der form. (wäre auch in ext3 möglich gewesen)
 
-5.1) Radiobox und checkboxgroup
-- Eine radiobox darf keinen namen haben, die dazugehörigen items (auswahlmöglichkeiten) MÜSSEN
+5.1) Radiogroup und checkboxgroup
+- Eine radiogroup darf keinen namen haben, die dazugehörigen items (auswahlmöglichkeiten) MÜSSEN
   einen namen haben - und zwar alle den gleichen.
-  Ein name an der radiobox selbst resultiert in:  invalid 'in' operand value \n if (value && name in value) { ...
+  Ein name an der radiogroup selbst resultiert in:  invalid 'in' operand value \n if (value && name in value) { ...
 - Eine checkboxgroup darf auch keinen namen haben - macht auch nicht viel sinn.
+- ACHTUNG: Für eigene fehlermeldungen (z.b. invalidfields) macht es sinn, dass
+  radiogroups und checkboxgroups einen FAKE namen haben.
+  Dieser fakename DARF MIT KEINEM FELDNAMEN KOLLIDIEREN sonst fehlermeldung oder feldinhalt geht verloren.
 
 
 6) Ext.Date
