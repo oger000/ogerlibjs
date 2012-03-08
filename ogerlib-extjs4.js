@@ -376,9 +376,8 @@ Oger.extjs.dirtyFieldsInfo = function(form) {
 * Ask to force window close
 * @panel: Panel (or window) that should be closed
 * @form: FormPanel or BasicForm to test for dirty state
-* @showDirtyInfo: Show info about dirty fields
 */
-Oger.extjs.confirmDirtyClose = function(win, form, showDirtyInfo) {
+Oger.extjs.confirmDirtyClose = function(win, form) {
 
   if (!form) {
     form = win.down('form');
@@ -386,7 +385,7 @@ Oger.extjs.confirmDirtyClose = function(win, form, showDirtyInfo) {
   if (typeof form.getForm == 'function') {
     form = form.getForm();
   }
-http://localhost/archdocu/
+
   // only ask if dirty
   if (Oger.extjs.formIsDirty(form)) {
 
@@ -397,10 +396,17 @@ http://localhost/archdocu/
       modal: true,
       autoScroll: true,
       layout: 'fit',
+      border: false,
 
       items: [
-        { xtype: 'panel',
-          html: Oger._('<CENTER><BR>Ungespeicherte Änderungen vorhanden.<BR><BR>Zurück zur Eingabe?</CENTER>'),
+        { xtype: 'form',
+          layout: 'fit',
+          bodyPadding: 15,
+          items: [
+            { xtype: 'textarea', value: Oger._('Ungespeicherte Änderungen vorhanden.\n\nZurück zur Eingabe?'),
+              fieldStyle: 'text-align:center;border:none;',
+            },
+          ]
         }
       ],
 
@@ -411,7 +417,7 @@ http://localhost/archdocu/
             this.up('window').close();
           },
         },
-        { text: Oger._('Wegwerfen'),
+        { text: Oger._('Verwerfen'),
           handler: function(button, event) {
             Oger.extjs.resetDirty(form);
             win.close();
@@ -455,7 +461,9 @@ Oger.extjs.confirmDirtyReset = function(form, showDirtyInfo) {
     if (showDirtyInfo) {
       dirtyFieldsInfo = Oger.extjs.dirtyFieldsInfo(form);
     }
-    Ext.Msg.confirm(Oger._('Bestätigung erforderlich'), Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg), function(answerId) {
+    Ext.Msg.confirm(Oger._('Bestätigung erforderlich'),
+                    Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg),
+                    function(answerId) {
       if(answerId == 'yes') {
         // Oger.extjs.resetForm(form);
         form.reset();
@@ -465,7 +473,132 @@ Oger.extjs.confirmDirtyReset = function(form, showDirtyInfo) {
     return false;
   }
 
-}  // eo confirm force close
+}  // eo confirm reset form
+
+/*
+ * Memo from: http://stackoverflow.com/questions/6261013/extjs-message-box-with-custom-buttons
+ * for confirmDirtyClose and confirmDirtyAction
+
+  Ext.define('App.view.MyDialog', {
+    show: function() {
+        var dialog = Ext.create('Ext.window.MessageBox', {
+            buttons: [{
+                text: 'baz',
+                iconCls: 'icon-add',
+                handler: function() {
+                    dialog.close();
+                }
+            }]
+        });
+
+        dialog.show({
+            title: 'foo!',
+            msg: '<p>bar?</p>',
+            icon: Ext.MessageBox.WARNING
+        });
+
+        dialog.setHeight(160);
+        dialog.setWidth(420);
+    }
+});
+var dialog = Ext.create('App.view.MyDialog');
+dialog.show();
+*/
+
+/*
+* Ask to continue action even if form dirty
+* @args: object with parameters
+*        Members are:
+*        - form: (mandatory) FormPanel or BasicForm
+*        - title: (optional) title for the confirmation window
+*        - msg: (optional) message for the confirmation window
+*        - saveFn: (mandatory) action for yes button
+*        - saveText: (optional) alternate text for save button
+*        - resetFn: (optional) action for no button
+*        - resetText: (optional) alternate text for reset button
+*        - cancelText: (optional) alternate text for cancel button
+*        (and may be later TODO parameters for the called functions)
+*/
+Oger.extjs.confirmDirtyAction = function(args) {
+
+  var form = args.form;
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+  // only ask if form is dirty
+  // (normaly this method should only be called if the form is dirty !!!)
+  if (Oger.extjs.formIsDirty(form)) {
+
+    var title = (args.title ? args.title : Oger._('Bestätigung erforderlich'));
+    var msg = (args.msg ? args.msg : Oger._('Ungespeicherte Änderungen vorhanden.\n\nJetzt Speichern?'));
+
+    var saveText = (args.saveText ? args.saveText : Oger._('Speichern'));
+    var resetText = (args.resetText ? args.resetText : Oger._('Zurücksetzen'));
+    var cancelText = (args.cancelText ? args.cancelText : Oger._('Abbrechen'));
+
+    var confirmWin = Ext.create('Ext.window.Window', {
+      title: title,
+      width: 400,
+      height: 200,
+      modal: true,
+      autoScroll: true,
+      layout: 'fit',
+      border: false,
+
+      items: [
+        { xtype: 'form',
+          layout: 'fit',
+          bodyPadding: 15,
+          items: [
+            { xtype: 'textarea', value: msg, fieldStyle: 'text-align:center;border:none;' },
+          ]
+
+        }
+      ],
+
+      buttonAlign: 'center',
+      buttons: [
+        { text: saveText,
+          handler: function(button, event) {
+            args.saveFn();
+            this.up('window').close();
+          },
+        },
+        { text: resetText,
+          handler: function(button, event) {
+            if (args.resetFn) {
+              args.resetFn();
+            }
+            else {
+              Oger.extjs.resetForm(form);
+            }
+            this.up('window').close();
+          },
+        },
+        { text: cancelText,
+          handler: function(button, event) {
+            // do nothing
+            this.up('window').close();
+          },
+        },
+        { text: Oger._('Details'),
+          handler: function(button, event) {
+            Ext.Msg.alert(Oger._('Ungespeicherte Änderungen - Details'), Oger.extjs.dirtyFieldsInfo(form));
+          },
+        },
+      ],
+    });
+    confirmWin.show();
+
+    return false;
+  }
+
+}  // eo confirm action on dirty form
+
+
+
+
 
 
 
