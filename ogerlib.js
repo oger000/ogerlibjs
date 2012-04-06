@@ -8,7 +8,9 @@
 /**
 * Fake Oger namespace. (maybe better use constructor function?)
 */
-var Oger = {};
+if (!Oger) {
+  Oger = {};
+}
 
 
 /**

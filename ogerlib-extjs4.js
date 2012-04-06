@@ -6,9 +6,14 @@
 
 
 /*
-* Define Oger.extjs namespace.
+* Define namespace.
 */
-Oger.extjs = {};
+if (!Oger) {
+  Oger = {};
+}
+if (!Oger.extjs) {
+  Oger.extjs = {};
+}
 
 
 /*
