@@ -8,7 +8,7 @@
 /**
 * Fake Oger namespace. (maybe better use constructor function?)
 */
-if (!Oger) {
+if (typeof Oger == 'undefined') {
   Oger = {};
 }
 

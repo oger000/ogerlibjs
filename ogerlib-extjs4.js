@@ -8,10 +8,10 @@
 /*
 * Define namespace.
 */
-if (!Oger) {
+if (typeof Oger == 'undefined') {
   Oger = {};
 }
-if (!Oger.extjs) {
+if (typeof Oger.extjs == 'undefined') {
   Oger.extjs = {};
 }
 
