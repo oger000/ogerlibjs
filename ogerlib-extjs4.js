@@ -462,18 +462,59 @@ Oger.extjs.confirmDirtyReset = function(form, showDirtyInfo) {
   // only ask if dirty
   if (Oger.extjs.formIsDirty(form)) {
 
+    /*
     var dirtyFieldsInfo = '';
     if (showDirtyInfo) {
       dirtyFieldsInfo = Oger.extjs.dirtyFieldsInfo(form);
+      dirtyFieldsInfo = '\n' + dirtyFieldsInfo;
     }
-    Ext.Msg.confirm(Oger._('Bestätigung erforderlich'),
-                    Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?' + dirtyMsg),
-                    function(answerId) {
-      if(answerId == 'yes') {
-        // Oger.extjs.resetForm(form);
-        form.reset();
-      }
+    */
+
+    var confirmWin = Ext.create('Ext.window.Window', {
+      title: Oger._('Ungespeicherte Änderungen'),
+      width: 400,
+      height: 200,
+      modal: true,
+      autoScroll: true,
+      layout: 'fit',
+      border: false,
+
+      items: [
+        { xtype: 'form',
+          layout: 'fit',
+          bodyPadding: 15,
+          items: [
+            { xtype: 'textarea',
+              fieldStyle: 'text-align:center;border:none;',
+              value: Oger._('Ungespeicherte Änderungen vorhanden. Änderungen rückgängig machen?'),
+            },
+          ]
+
+        }
+      ],
+
+      buttonAlign: 'center',
+      buttons: [
+        { text: 'Ja',
+          handler: function(button, event) {
+            form.reset();
+            this.up('window').close();
+          },
+        },
+        { text: 'Nein',
+          handler: function(button, event) {
+            // do nothing
+            this.up('window').close();
+          },
+        },
+        { text: Oger._('Details'),
+          handler: function(button, event) {
+            Ext.Msg.alert(Oger._('Ungespeicherte Änderungen - Details'), Oger.extjs.dirtyFieldsInfo(form));
+          },
+        },
+      ],
     });
+    confirmWin.show();
 
     return false;
   }
@@ -833,8 +874,8 @@ Oger.extjs.showInvalidFields = function(form) {
 
   var win = Ext.create('Ext.window.Window', {
     title: Oger._('Fehler'),
-    width: 100,
-    height: 100,
+    width: 300,
+    height: 200,
     modal: true,
     autoScroll: true,
     layout: 'fit',
