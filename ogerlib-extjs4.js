@@ -299,6 +299,7 @@ Oger.extjs.handleAjaxFailure = function(response, opts) {
 
 /**
 * check if form is dirty and do nothing else
+* OBSOLETED by ext-4.1
 */
 Oger.extjs.formIsDirty = function(form) {
 
@@ -360,7 +361,7 @@ Oger.extjs.dirtyFieldsInfo = function(form) {
       }
       else {
         if (field.isDirty()) {
-          dirtyMsg += ' ' + field.name;
+          dirtyMsg += ' ' + field.fieldLabel + ' (' + field.name + ')';
           if (field.isXType('radiofield') || field.isXType('checkboxfield')) {
             dirtyMsg += '[' + field.inputValue + ']';
           }
@@ -726,7 +727,7 @@ Oger.extjs.getInvalidFieldNames = function(form) {
   var processField = function(field) {
     // include radiogroup and checkbox group
     if (!field.isValid()) {
-      invalidFields += (invalidFields ? ', ' : '') + field.getName();
+      invalidFields += (invalidFields ? ', ' : '') + field.fieldLabel + ' (' + field.name + ')';
     }
   };
 
