@@ -738,6 +738,32 @@ Oger.extjs.getInvalidFieldNames = function(form) {
 
 
 
+/*
+* Repair invalid combo values. (set to null by error)
+* @form: Form to test the fields
+*/
+Oger.extjs.repairComboValues = function(form) {
+
+  // if a form panel is given than get the underlaying basic form
+  if (typeof form.getForm == 'function') {
+    form = form.getForm();
+  }
+
+  var processField = function(field) {
+    // include radiogroup and checkbox group
+    if (field.isXType('combo')) {
+      if (field.getSubmitValue() === null && field.originalValue != null) {
+        field.setValue('');
+      }
+    }
+  };
+
+  form.getFields().each(processField);
+
+  return true;
+};  // eo repair combo values
+
+
 /**
  * Reset form
  * form.reset() does not reset null values in hidden fields and
