@@ -750,7 +750,6 @@ Oger.extjs.repairComboValues = function(form) {
   }
 
   var processField = function(field) {
-    // include radiogroup and checkbox group
     if (field.isXType('combo')) {
       if (field.getSubmitValue() === null && field.originalValue != null) {
         field.setValue('');
