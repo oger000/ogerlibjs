@@ -48,6 +48,8 @@
 
       //perform post-processing.
       if (!(response.responseText || response.responseXML)) {
+        /*
+         * hide details
         var params = response.request.options.params;
         var paramStr = '';
         for (prop in params) {
@@ -59,6 +61,8 @@
             'Url: ' + response.request.options.url +
             '; Params: ' + paramStr +
             '.');
+        */
+        // this should result in calling extjs failure listeners
         response.responseText = '{"success":false}';
       }
 
