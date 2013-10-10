@@ -26,3 +26,44 @@
 // datepicker setting is overwritten for datepickers of datefields
 // Now done in ext-lang-de.js, so it is here only for documentation
 //Ext.form.field.Date.startDay = 1;
+
+
+/*
+ * Show warning if ajax response is empty.
+ * By closure via an anonymous function.
+ */
+(function() {
+
+  var originalFunc = Ext.data.Connection.prototype.createResponse;
+
+  Ext.override(Ext.data.Connection, {
+
+    createResponse: function() {
+
+      //perform pre-processing
+      //alert("pre-processing");
+
+      //call the original hide function
+      var response = originalFunc.apply(this, arguments);
+
+      //perform post-processing.
+      if (!(response.responseText || response.responseXML)) {
+        var params = response.request.options.params;
+        var paramStr = '';
+        for (prop in params) {
+          paramStr += prop + '=' + params[prop] + ', ';
+        }
+        Ext.create('Ext.window.MessageBox').alert(
+          'Warning',
+          'Empty response from server (changed to success=false now). ' +
+            'Url: ' + response.request.options.url +
+            '; Params: ' + paramStr +
+            '.');
+        response.responseText = '{"success":false}';
+      }
+
+      // return the return-value from the original function
+      return response;
+    }
+  });
+})();
