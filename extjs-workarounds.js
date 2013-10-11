@@ -63,7 +63,7 @@
             '.');
         */
         // this should result in calling extjs failure listeners
-        response.responseText = '{"success":false}';
+        response.responseText = '{"success":false, "msg":"Empty response from server."}';
       }
 
       // return the return-value from the original function
