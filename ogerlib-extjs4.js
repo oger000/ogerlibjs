@@ -904,3 +904,21 @@ Oger.extjs.showInvalidFields = function(form) {
   win.show();
 
 }  // eo invalid fields window
+
+
+
+
+/**
+ * Define Extjs Messagebox with close action destroy
+ */
+Ext.define('Oger.extjs.MessageBox', {
+  extend: 'Ext.window.MessageBox',
+  alias: 'widget.ogerMsgBox',
+  //closeAction: 'destroy',
+
+  listeners: {
+    hide: function(cmp, opts) {
+      cmp.destroy();
+    },
+  },
+});  // eo oger message box
