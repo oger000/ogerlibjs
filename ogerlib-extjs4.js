@@ -909,6 +909,33 @@ Oger.extjs.showInvalidFields = function(form) {
 
 
 /**
+ * Create component once by reusing existing xtype or component class
+ * memo: use query controls like '?', '?xtype', '?class'  ???
+ */
+Oger.extjs.createOnce = function (query, className, classDef) {
+
+  if (!query) {
+    var o = Oger.getObjByName(className);
+    query = o.xtype;  // or use o.prototype.alias[0] (without widget prefix) ???
+  }
+
+  // fallback to class name
+  if (!query) {
+    query = 'component[$className=' + className + ']';
+  }
+
+  var cmp = Ext.ComponentQuery.query(query)[0];
+
+  if (!cmp) {
+    cmp = Ext.create(className, classDef);
+  }
+
+  return cmp;
+}  // eo create once
+
+
+
+/**
  * Define Extjs Messagebox with close action destroy
  */
 Ext.define('Oger.extjs.MessageBox', {
