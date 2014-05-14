@@ -124,3 +124,22 @@ Oger.natStrCmpCi = function(str1, str2) {
 
   return Oger.natStrCmpCi(str1.toLowerCase(), str2.toLowerCase());
 }  // eo case insensitive natural sort
+
+
+
+
+/**
+* Get object by object name as string (allow namespace)
+* see: http://stackoverflow.com/questions/4981671/access-namespaced-javascript-object-by-string-name-without-using-eval
+*/
+Oger.getObjByName = function (objName) {
+
+  var obj = window;
+
+  var parts = objName.split('.');
+  for (var i = 0, len = parts.length; i < len; ++i) {
+    obj = obj[parts[i]];
+  }
+
+  return obj;
+}  // eo get object by name
