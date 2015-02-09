@@ -9,7 +9,7 @@
 * Fake Oger namespace. (maybe better use constructor function?)
 */
 if (typeof Oger == 'undefined') {
-  Oger = {};
+	Oger = {};
 }
 
 
@@ -18,9 +18,9 @@ if (typeof Oger == 'undefined') {
 */
 Oger.l10nValue = new Object();  // used as associative array
 Oger._ = function(text) {
-  // var key = text.replace(/[^a-z0-9_]/gi, '_');
-  var key = text.replace(/\W/g, '_');
-  return (Oger.l10nValue[key] ? Oger.l10nValue[key] : text);
+	// var key = text.replace(/[^a-z0-9_]/gi, '_');
+	var key = text.replace(/\W/g, '_');
+	return (Oger.l10nValue[key] ? Oger.l10nValue[key] : text);
 };
 
 
@@ -29,9 +29,9 @@ Oger._ = function(text) {
 * commenting out some or all actions.
 */
 Oger.debug = function(msg) {
-  alert(msg);
-  // maybe firebug only?
-  //console.log(msg);
+	alert(msg);
+	// maybe firebug only?
+	//console.log(msg);
 }
 
 
@@ -41,7 +41,7 @@ Oger.debug = function(msg) {
 * Use Ext.MessageBox to have a non-blocking variant.
 */
 Oger.debugExt = function(msg) {
-  Ext.Msg.alert(msg);
+	Ext.Msg.alert(msg);
 }
 
 
@@ -54,24 +54,24 @@ Oger.debugExt = function(msg) {
  */
 Oger.sendToUrl = function(path, params, method) {
 
-  method = method || "post"; // Set method to post by default, if not specified.
+	method = method || "post"; // Set method to post by default, if not specified.
 
-  // The rest of this code assumes you are not using a library.
-  // It can be made less wordy if you use one.
-  var form = document.createElement("FORM");
-  form.setAttribute("method", method);
-  form.setAttribute("action", path);
+	// The rest of this code assumes you are not using a library.
+	// It can be made less wordy if you use one.
+	var form = document.createElement("FORM");
+	form.setAttribute("method", method);
+	form.setAttribute("action", path);
 
-  for(var key in params) {
-    var hiddenField = document.createElement("INPUT");
-    hiddenField.setAttribute("type", "hidden");
-    hiddenField.setAttribute("name", key);
-    hiddenField.setAttribute("value", params[key]);
-    form.appendChild(hiddenField);
-  }
+	for(var key in params) {
+		var hiddenField = document.createElement("INPUT");
+		hiddenField.setAttribute("type", "hidden");
+		hiddenField.setAttribute("name", key);
+		hiddenField.setAttribute("value", params[key]);
+		form.appendChild(hiddenField);
+	}
 
-  document.body.appendChild(form);
-  form.submit();
+	document.body.appendChild(form);
+	form.submit();
 
 }  // eo send to url
 
@@ -81,36 +81,36 @@ Oger.sendToUrl = function(path, params, method) {
  * Based on: http://my.opera.com/GreyWyvern/blog/show.dml/1671288
 */
 Oger.natStrCmp = function(str1, str2) {
-  str1 = '' + str1;
-  str2 = '' + str2;
+	str1 = '' + str1;
+	str2 = '' + str2;
 
-  var chunkify = function(str) {
+	var chunkify = function(str) {
 
-    var aStr = [], x = 0, y = -1, wasDigit = 0, i, j;
+		var aStr = [], x = 0, y = -1, wasDigit = 0, i, j;
 
-    while (i = (j = str.charAt(x++)).charCodeAt(0)) {
-      var isDigit = (i >=48 && i <= 57);  // '.' and '0'-'9' - we do not use '.' and no comma at all !!!
-      if (isDigit !== wasDigit) {
-        aStr[++y] = '';
-        wasDigit = isDigit;
-      }
-      aStr[y] += j;
-    }
-    return aStr;
-  }
+		while (i = (j = str.charAt(x++)).charCodeAt(0)) {
+			var isDigit = (i >=48 && i <= 57);  // '.' and '0'-'9' - we do not use '.' and no comma at all !!!
+			if (isDigit !== wasDigit) {
+				aStr[++y] = '';
+				wasDigit = isDigit;
+			}
+			aStr[y] += j;
+		}
+		return aStr;
+	}
 
-  var chunk1 = chunkify(str1);
-  var chunk2 = chunkify(str2);
+	var chunk1 = chunkify(str1);
+	var chunk2 = chunkify(str2);
 
-  for (x = 0; chunk1[x] && chunk2[x]; x++) {
-    if (chunk1[x] !== chunk2[x]) {
-      var c = Number(chunk1[x]), d = Number(chunk2[x]);
-      if (c == chunk1[x] && d == chunk2[x]) {
-        return c - d;
-      } else return (chunk1[x] > chunk2[x]) ? 1 : -1;
-    }
-  }
-  return chunk1.length - chunk2.length;
+	for (x = 0; chunk1[x] && chunk2[x]; x++) {
+		if (chunk1[x] !== chunk2[x]) {
+			var c = Number(chunk1[x]), d = Number(chunk2[x]);
+			if (c == chunk1[x] && d == chunk2[x]) {
+				return c - d;
+			} else return (chunk1[x] > chunk2[x]) ? 1 : -1;
+		}
+	}
+	return chunk1.length - chunk2.length;
 }  // eo natural sort
 
 
@@ -119,10 +119,10 @@ Oger.natStrCmp = function(str1, str2) {
  * Natural compare for sort. Case insensitive.
 */
 Oger.natStrCmpCi = function(str1, str2) {
-  str1 = '' + str1;
-  str2 = '' + str2;
+	str1 = '' + str1;
+	str2 = '' + str2;
 
-  return Oger.natStrCmpCi(str1.toLowerCase(), str2.toLowerCase());
+	return Oger.natStrCmpCi(str1.toLowerCase(), str2.toLowerCase());
 }  // eo case insensitive natural sort
 
 
@@ -134,12 +134,12 @@ Oger.natStrCmpCi = function(str1, str2) {
 */
 Oger.getObjByName = function (objName) {
 
-  var obj = window;
+	var obj = window;
 
-  var parts = objName.split('.');
-  for (var i = 0, len = parts.length; i < len; ++i) {
-    obj = obj[parts[i]];
-  }
+	var parts = objName.split('.');
+	for (var i = 0, len = parts.length; i < len; ++i) {
+		obj = obj[parts[i]];
+	}
 
-  return obj;
+	return obj;
 }  // eo get object by name

@@ -12,17 +12,17 @@ Jsonstore gibts nicht mehr. Expliziter proxy erforderlich.  Die url im proxy dek
 3) Grid - deklaration.
 columns statt colModel.colums.
 - beforeitemclick
-  return false bricht die selektion der neuen zeile nicht ab, stattdessen beforeselect verwenden
+	return false bricht die selektion der neuen zeile nicht ab, stattdessen beforeselect verwenden
 ?- rowclick und rowdblclick -> itemclick
 
 
 4) ux
 Die wenigsten user extentsions funktionieren.
 - Obsolet:
-  - xdate (angabe von submitformat in datefield)
-  - xcheckbox (angabe von uncheckedValue in checkbox)
-  - oosubmmit (primär wegen xdate und xcheckbox eingesetzt. Radiogroup dürfte in ext4 auch besser zu meinem modell passen.)
-  - fileupload: funktion bereitgestellt von Ext.form.field.File (xtype: 'filefield')
+	- xdate (angabe von submitformat in datefield)
+	- xcheckbox (angabe von uncheckedValue in checkbox)
+	- oosubmmit (primär wegen xdate und xcheckbox eingesetzt. Radiogroup dürfte in ext4 auch besser zu meinem modell passen.)
+	- fileupload: funktion bereitgestellt von Ext.form.field.File (xtype: 'filefield')
 
 - grid-filter-row: kein ersatz gefunden
 
@@ -34,12 +34,12 @@ Die wenigsten user extentsions funktionieren.
 
 5.1) Radiogroup und checkboxgroup
 - Eine radiogroup darf keinen namen haben, die dazugehörigen items (auswahlmöglichkeiten) MÜSSEN
-  einen namen haben - und zwar alle den gleichen.
-  Ein name an der radiogroup selbst resultiert in:  invalid 'in' operand value \n if (value && name in value) { ...
+	einen namen haben - und zwar alle den gleichen.
+	Ein name an der radiogroup selbst resultiert in:  invalid 'in' operand value \n if (value && name in value) { ...
 - Eine checkboxgroup darf auch keinen namen haben - macht auch nicht viel sinn.
 - ACHTUNG: Für eigene fehlermeldungen (z.b. invalidfields) macht es sinn, dass
-  radiogroups und checkboxgroups einen FAKE namen haben.
-  Dieser fakename DARF MIT KEINEM FELDNAMEN KOLLIDIEREN sonst fehlermeldung oder feldinhalt geht verloren.
+	radiogroups und checkboxgroups einen FAKE namen haben.
+	Dieser fakename DARF MIT KEINEM FELDNAMEN KOLLIDIEREN sonst fehlermeldung oder feldinhalt geht verloren.
 
 
 6) Ext.Date
@@ -49,20 +49,20 @@ Patch:
 --- a/locale/ext-lang-de.js
 +++ b/locale/ext-lang-de.js
 @@ -100,6 +100,7 @@ Ext.onReady(function() {
-         Ext.Date.getShortDayName = function(day) {
-             return Ext.Date.dayNames[day].substring(0, 3);
-         };
+				 Ext.Date.getShortDayName = function(day) {
+						 return Ext.Date.dayNames[day].substring(0, 3);
+				 };
 +        Ext.Date.defaultFormat = "d.m.Y";
-     }
-     if(Ext.MessageBox){
-         Ext.MessageBox.buttonText = {
+		 }
+		 if(Ext.MessageBox){
+				 Ext.MessageBox.buttonText = {
 
 
 7) Defer actions:
-   Ext.MessageBox.hide.defer(1500, Ext.MessageBox); oder
-   (function() { Ext.Msg.hide(); }).defer(5000);
-   -> Ext.Function.defer(Ext.MessageBox.hide, 1500, Ext.MessageBox);
-   => Ext.Function.defer(Function fn, Number millis, [Object scope], [Array args], [Boolean/Number appendArgs])
+	 Ext.MessageBox.hide.defer(1500, Ext.MessageBox); oder
+	 (function() { Ext.Msg.hide(); }).defer(5000);
+	 -> Ext.Function.defer(Ext.MessageBox.hide, 1500, Ext.MessageBox);
+	 => Ext.Function.defer(Function fn, Number millis, [Object scope], [Array args], [Boolean/Number appendArgs])
 
 
 
@@ -70,10 +70,10 @@ Patch:
 *** ERROR MESSAGES ***
 
 - "namespace is undefined"
-  in ext-all-debug.js: if (namespace === from || namespace.substring(0, from.length) === from) {
-  bedeutet meist verwendung von ux komponenten im extjs-3 modell oder weggefallene komponenten, die
-  igendwo verborgen sind und daher keine vernünftige javascript fehlermeldung bringen
-  (siehe <http://www.sencha.com/forum/showthread.php?136993-Error-in-migration-from-Ext-3.3-to-4.0.2>)
+	in ext-all-debug.js: if (namespace === from || namespace.substring(0, from.length) === from) {
+	bedeutet meist verwendung von ux komponenten im extjs-3 modell oder weggefallene komponenten, die
+	igendwo verborgen sind und daher keine vernünftige javascript fehlermeldung bringen
+	(siehe <http://www.sencha.com/forum/showthread.php?136993-Error-in-migration-from-Ext-3.3-to-4.0.2>)
 
 - "invalid 'in' operand value" \n "if (value && name in value) {"
-  Kann bedeuten name-property in radiobox gesetzt.
+	Kann bedeuten name-property in radiobox gesetzt.
