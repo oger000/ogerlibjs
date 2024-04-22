@@ -760,19 +760,19 @@ Oger.extjs.resetForm = function(form) {
 	return;
 
 	// OBSOLETE for now
-	var processField = function(field) {
-		if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
-			// group items are separate fields so handling of group is not necessary
-		}
-		else {
-			// field.setValue(field.originalValue);
-			// fileField has no setValue nor does "field.value = field.originalValue" work
-			// nor works field.reset() but something we must use
-			field.reset();
-		}
-	};
+	// var processField = function(field) {
+	// 	if (field.isXType('radiogroup') || field.isXType('checkboxgroup')) {
+	// 		// group items are separate fields so handling of group is not necessary
+	// 	}
+	// 	else {
+	// 		// field.setValue(field.originalValue);
+	// 		// fileField has no setValue nor does "field.value = field.originalValue" work
+	// 		// nor works field.reset() but something we must use
+	// 		field.reset();
+	// 	}
+	// };
 
-	form.getFields().each(processField);
+	// form.getFields().each(processField);
 };  // eo reset form
 
 
@@ -969,4 +969,3 @@ Oger.extjs.expireAlert = function (title, msg, fn, scope, timeout) {
 	mbox.alert(title, msg, fn, scope);
 	Ext.Function.defer(function() { mbox.close(); }, timeout);
 }  // eo flash msg
-
